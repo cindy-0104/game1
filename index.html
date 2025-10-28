@@ -13,9 +13,9 @@
         }
 
         #phone {
+            font-size: 100px;
             width: 60px;
             height: 60px;
-            background-color: #34db60;
             border-radius: 20%;
             position: absolute;
             top: 500px;
@@ -42,14 +42,44 @@
 
 
             position: absolute;
-            top: 50px;
+            top: 70px;
             /* 목표 Y 좌표 */
             left: 200px;
             /* 목표 X 좌표 */
             z-index: -1;
             /* 공 아래에 위치 */
+        }
 
 
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+
+        #newplanet {
+            animation-name: fadeIn;
+            animation-delay: 5s;
+            animation-fill-mode: both;
+            background-color: white;
+            background-size: 400px 300 px;
+            position: absolute;
+            top: 30%;
+            left: 10%;
+
+
+            /*초기상태*/
+            opacity: 0;
+            font-size: 60px;
+            color: rgb(77, 44, 44);
+            display: block;
         }
     </style>
 </head>
@@ -57,8 +87,9 @@
 <body>
     <div id="win"></div>
     <div id="lose"></div>
-    <div id="phone"></div>
+    <div id="phone">📱</div>
     <div id="target"></div>
+    <a href="new planet.html" id="newplanet">새 보금자리가 준비되었어요</a>
     <h>지구가 망했다! 외계 행성으로 이사를 가야합니다. <p>짐을 당겨서 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!</h>
 
     <script>
