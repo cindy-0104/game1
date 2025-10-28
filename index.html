@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지구가 망했다</title>
+
+    <style>
+        body {
+            background-image: url('Aliens.jpg');
+            color: white;
+        }
+
+        #phone {
+            width: 60px;
+            height: 60px;
+            background-color: #34db60;
+            border-radius: 20%;
+            position: absolute;
+            top: 500px;
+            left: 300px;
+            cursor: pointer;
+        }
+
+        #win,
+        #lose {
+            position: absolute;
+            top: 50px;
+            left: 40%;
+
+            font-size: 24px;
+
+
+
+        }
+
+        #target {
+            width: 300px;
+            height: 200px;
+            background-color: #dc858550;
+
+
+            position: absolute;
+            top: 50px;
+            /* 목표 Y 좌표 */
+            left: 200px;
+            /* 목표 X 좌표 */
+            z-index: -1;
+            /* 공 아래에 위치 */
+
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="win"></div>
+    <div id="lose"></div>
+    <div id="phone"></div>
+    <div id="target"></div>
+    <h>지구가 망했다! 외계 행성으로 이사를 가야합니다. <p>짐을 당겨서 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!</h>
+
+    <script>
+        const phone = document.getElementById('phone');
+        const wincaption = document.getElementById('win')
+        const losecaption = document.getElementById('lose')
+        const target = document.getElementById('target');
+
+        let isDragging = false;
+        let startX, startY;
+
+        //힘의 세기
+        const FORCE_MULTIPLIER = 14;
+
+
+        // 공이 착지할 최소 최대 거리 
+        const MIN_TRAVEL = 300;
+        const MAX_TRAVEL = 600;
+
+        const TARGET_AREA = {
+            top: 50,
+            bottom: 50 + 200, // top + height
+            left: 200,
+            right: 200 + 300 // left + width
+        };
+
+        function resetball() {
+            phone.style.transition = 'none';
+            wincaption.style.display = 'none';
+            losecaption.style.display = 'none';
+
+        }
+
+        function winorlose(finalX, finalY) {
+            //타겟 좌표 안에 공의 중앙에 왔니?
+            const isInsideTarget = (
+                finalX >= TARGET_AREA.left &&
+                finalX <= TARGET_AREA.right &&
+                finalY >= TARGET_AREA.top &&
+                finalY <= TARGET_AREA.bottom
+            );
+
+            if (isInsideTarget) {
+                wincaption.textContent = `보내기 성공!`;
+                wincaption.style.display = 'block';
+                losecaption.style.display = 'none';
+                return true;
+            }
+            else {
+                losecaption.textContent = `보내기 실패!`;
+                losecaption.style.display = 'block';
+                wincaption.style.display = 'none';
+                return false;
+            }
+
+        }
+
+
+        phone.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = phone.offsetLeft + phone.offsetWidth / 2;
+            startY = phone.offsetTop + phone.offsetHeight / 2;
+            e.preventDefault();
+            phone.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            phone.style.left = (e.clientX - phone.offsetWidth / 2) + 'px';
+            phone.style.top = (e.clientY - phone.offsetHeight / 2) + 'px';
+        });
+
+
+
+
+
+
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false; //드래그끝
+
+
+            let endX = e.clientX;
+            let endY = e.clientY;
+
+
+            //던질 방향을 계산! = vector
+            let directionX = (startX - endX) * FORCE_MULTIPLIER;
+            let directionY = (startY - endY) * FORCE_MULTIPLIER;
+
+            // Magnitude=힘의 크기 계산
+            let originalMagnitude = Math.sqrt(
+                (directionX * directionX) + (directionY * directionY)
+            );
+
+            //총 날아갈 거리 랜덤
+            const randomTravelRange = MAX_TRAVEL - MIN_TRAVEL;
+            const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
+
+
+            //공이 날아갈 최종 벡터 계산을 위해 초기화
+            let movingX = 0;
+            let movingY = 0;
+            let finalX = phone.offsetLeft + phone.offsetWidth / 2;
+            let finalY = phone.offsetTop + phone.offsetHeight / 2;
+
+
+
+            // 당긴 힘이 0이 아닐 때만 적용
+            if (originalMagnitude > 0) {
+
+                // (랜덤 크기 / 원래 크기) 비율을 각 방향 벡터에 곱해 크기를 조정합니다.
+                const scaleFactor = randomMagnitude / originalMagnitude;
+                movingX = directionX * scaleFactor;
+                movingY = directionY * scaleFactor;
+
+                //최종도착좌표
+                finalX = phone.offsetLeft + movingX + (phone.offsetWidth / 2);
+                finalY = phone.offsetTop + movingY + (phone.offsetHeight / 2);
+
+                // 타겟 좌표 기준으로 승패
+
+
+                phone.style.transition = 'transform 1s ease-out';
+                phone.style.transform = `translate(${movingX}px, ${movingY}px)`;
+            }
+
+            setTimeout(() => {
+                winorlose(finalX, finalY);
+
+                setTimeout(resetball, 3000);
+
+            }, 1000);
+        });
+
+
+
+    </script>
+</body>
+
+</html>
