@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지구가 망했다</title>
+
+
+    <style>
+        body {
+            background-image: url;
+            color: rgb(71, 83, 216);
+        }
+
+
+        #phone {
+            font-size: 10vw;
+            width: 12vw;
+            height: 12vw;
+            border-radius: 50%;
+            position: absolute;
+            top: 75vh;
+            left: 40vw;
+            cursor: pointer;
+        }
+
+
+        #win {
+            position: absolute;
+            top: 5vh;
+            left: 50%;
+            transform: translateX(-50%) !important;
+            font-size: 24px;
+            display: none;
+            z-index: 10;
+        }
+
+
+        #lose {
+            position: absolute;
+            top: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            display: none;
+
+
+            z-index: 10;
+
+
+        }
+
+
+        #target {
+            width: 200px;
+            /* JS의 (500)에 맞춤 */
+            height: 200px;
+            /* JS의 (300)에 맞춤 */
+            background-color: #dc858550;
+
+
+            position: absolute;
+            top: 70px;
+            /* JS의 top: 100에 맞춤 */
+            left: 100px;
+            /* JS의 left: 300에 맞춤 */
+            z-index: -1;
+        }
+
+
+        ;
+
+
+
+
+
+
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+
+            to {
+                opacity: 1;
+            }
+        }
+
+
+
+
+        #newplanet {
+            animation-name: fadeIn;
+            animation-delay: 8s;
+            animation-fill-mode: both;
+            background-color: white;
+            background-size: 400px 300 px;
+            position: absolute;
+            top: 30%;
+            left: 10%;
+
+
+
+
+            /*초기상태*/
+            opacity: 0;
+            font-size: 60px;
+            color: rgb(77, 44, 44);
+            display: block;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="win"></div>
+    <div id="lose"></div>
+    <div id="phone">📱</div>
+    <div id="target"></div>
+
+    <h>
+        <p>짐을 당겨서 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!
+    </h>
+    <a href="02.html">다음</a>
+
+    <script>
+        const phone = document.getElementById('phone');
+        const wincaption = document.getElementById('win')
+        const losecaption = document.getElementById('lose')
+        const target = document.getElementById('target');
+
+
+        let isDragging = false;
+        let startX, startY;
+
+
+        let attempts = 0;
+        let gamedone = false;
+
+
+        const FORCE_MULTIPLIER = 14;
+
+
+
+
+        // 공이 착지할 최소 최대 거리
+        const MIN_TRAVEL = 200;
+        const MAX_TRAVEL = 600;
+
+
+        const INITIAL_LEFT = '40vw';
+        const INITIAL_TOP = '60vh';
+
+
+        const TARGET_AREA = {
+            top: 70, // 목표 Y 시작 픽셀 (예시 값)
+            bottom: 70 + 200, // 목표 Y 끝 픽셀 (높이 300px)
+            left: 100, // 목표 X 시작 픽셀 (예시 값)
+            right: 100 + 200 // 목표 X 끝 픽셀 (너비 500px)
+        };
+
+
+        function resetball(isFinalFix = false, finalX, finalY) {
+            phone.style.transition = 'none';
+            wincaption.style.display = 'none';
+            losecaption.style.display = 'none';
+            if (!isFinalFix) {
+                // 실패 후 원점으로 돌아갈 때만 위치를 초기화합니다.
+                phone.style.transform = 'translate(0, 0)';
+                phone.style.left = INITIAL_LEFT;
+                phone.style.top = INITIAL_TOP;
+            } else {
+                // 성공 또는 최종 실패 시: transform을 제거하고 최종 위치에 고정합니다.
+                phone.style.transform = 'translate(0, 0)';
+                phone.style.left = (finalX - phone.offsetWidth / 2) + 'px';
+                phone.style.top = (finalY - phone.offsetHeight / 2) + 'px';
+            }
+        }
+
+
+
+
+        function winorlose(finalX, finalY) {
+            //타겟 좌표 안에 공의 중앙에 왔니?
+            const isInsideTarget = (
+                finalX >= TARGET_AREA.left &&
+                finalX <= TARGET_AREA.right &&
+                finalY >= TARGET_AREA.top &&
+                finalY <= TARGET_AREA.bottom
+            );
+
+
+            if (isInsideTarget) {
+                wincaption.textContent = `보내기 성공! 다음 짐을 던져주세요`;
+                wincaption.style.display = 'block';
+
+
+                gamedone = true;
+                resetball(true, finalX, finalY);
+                return true;
+            }
+            else {
+
+
+                attempts++;
+                if (attempts <= 3) {
+                    losecaption.textContent = `보내기 실패! (${attempts} / 3회)`;
+                    losecaption.style.display = 'block';
+
+
+
+
+                    setTimeout(() => resetball(false), 1000);
+                } else {
+                    losecaption.textContent = `보내기 실패! 기회를 모두 소진했습니다.`;
+                    losecaption.style.display = 'block';
+                    gamedone = true; // ⭐️ 4회 이상 실패 시 게임 종료
+                    resetball(true, finalX, finalY); // ⭐️ 던진 자리에 고정
+                }
+
+
+                return false;
+            }
+        }
+
+
+
+
+        phone.addEventListener('touchstart', (e) => {
+            if (gamedone) return;
+            isDragging = true;
+            startX = phone.offsetLeft + phone.offsetWidth / 2;
+            startY = phone.offsetTop + phone.offsetHeight / 2;
+
+
+            e.preventDefault();
+            phone.style.transition = 'none';
+        }, { passive: false });
+
+
+
+
+
+
+
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging || gamedone) return;
+            const touch = e.touches[0];
+            phone.style.left = (touch.clientX - phone.offsetWidth / 2) + 'px';
+            phone.style.top = (touch.clientY - phone.offsetHeight / 2) + 'px';
+            e.preventDefault(); // 스크롤 방지
+        }, { passive: false });
+
+
+
+
+
+
+
+
+
+
+
+
+        document.addEventListener('touchend', (e) => {
+            if (!isDragging || gamedone) return;
+            isDragging = false; //드래그끝
+
+
+
+
+            const touch = e.changedTouches[0];
+            let endX = touch.clientX;
+            let endY = touch.clientY;
+
+
+
+
+            //던질 방향을 계산! = vector
+            let directionX = (startX - endX) * FORCE_MULTIPLIER;
+            let directionY = (startY - endY) * FORCE_MULTIPLIER;
+
+
+            // Magnitude=힘의 크기 계산
+            let originalMagnitude = Math.sqrt(
+                (directionX * directionX) + (directionY * directionY)
+            );
+
+
+            //총 날아갈 거리 랜덤
+            const randomTravelRange = MAX_TRAVEL - MIN_TRAVEL;
+            const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
+
+
+
+
+            //공이 날아갈 최종 벡터 계산을 위해 초기화
+            let movingX = 0;
+            let movingY = 0;
+            let finalX = phone.offsetLeft + phone.offsetWidth / 2;
+            let finalY = phone.offsetTop + phone.offsetHeight / 2;
+
+
+
+
+
+
+            // 당긴 힘이 0이 아닐 때만 적용
+            if (originalMagnitude > 0) {
+
+
+                // (랜덤 크기 / 원래 크기) 비율을 각 방향 벡터에 곱해 크기를 조정합니다.
+                const scaleFactor = randomMagnitude / originalMagnitude;
+                movingX = directionX * scaleFactor;
+                movingY = directionY * scaleFactor;
+
+
+                //최종도착좌표
+                finalX = phone.offsetLeft + movingX + (phone.offsetWidth / 2);
+                finalY = phone.offsetTop + movingY + (phone.offsetHeight / 2);
+
+
+                // 타겟 좌표 기준으로 승패
+
+
+
+
+                phone.style.transition = 'transform 1s ease-out';
+                phone.style.transform = `translate(${movingX}px, ${movingY}px)`;
+            }
+
+
+            setTimeout(() => {
+                winorlose(finalX, finalY);
+            }, 1000);
+        });
+
+
+
+
+
+
+    </script>
+</body>
+
+
+</html>
