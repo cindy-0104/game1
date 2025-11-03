@@ -4,23 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지구가 망했다</title>
+    <title>행성으로 이동</title>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
+
+
+
         body {
-            background-image: url('papiers-peints-alien-planet-3d-rendu-illustration-d-39-ordinateur.jpg.jpg');
-            background-size: 700px;
-            color:
-                rgb(255, 255, 255);
+            overflow: hidden;
+            margin: 0px;
+            user-select: none;
+            width: 100%;
+            height: 100vh;
+            color: white;
+
+            /* 배경 이미지 경로는 사용 환경에 따라 수정하세요 */
+            background-image: url('spacepathback.png');
             background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+
+            font-family: "Gugi", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .dot-style {
+            width: 20px;
+            height: 20px;
+            background-color: rgb(246, 201, 75);
+            border-radius: 50%;
+
+            transition: all 0.4s ease-out;
+            z-index: 5;
             position: absolute;
         }
 
-        #tv {
-            font-size: 70px;
-            margin-top: 200px;
-            margin-left: 200px;
-            color: black;
+        /* ⭐️ 이동 경로 이미지 컨테이너 스타일 */
+        #moving-path-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            display: none;
+
+            background-color: rgba(0, 0, 0, 0.85);
+            /* 팝업 배경 */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            /* 팝업 중앙 정렬 및 내용 배치 */
+
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            display: none;
+        }
+
+        #moving-path-container img {
+            max-width: 80vw;
+            max-height: 50vh;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+
+        }
+
+        /* ⭐️ 팝업 문구 스타일 */
+        #popup-message {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+
+
+        }
+
+        /* ⭐️ 닫기 버튼 스타일 */
+        #close-popup-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+
+        }
+
+        #close-popup-btn:hover {
+            background-color: #45a049;
 
         }
     </style>
@@ -28,17 +106,167 @@
 
 <body>
 
-    <h> 새로운 보금자리로 이동중... </h>
+    <div id="moving-path-container">
+        <div id="popup-message"></div>
+        <img id="moving-path" src="" alt="이동 경로 이미지">
+        <button id="close-popup-btn">계속 이동하기</button>
+        <a href="03.html"></a>
+    </div>
 
-    <a href="03.html">다음</a>
-
-    <div id="tv">...</div>
+    <h>울지 행성으로 이동중..</h>
     <script>
-        e.preventDefault();
-        phone.style.transition = 'none';
-        { passive: false };
+        let isDrawing = false;
+        let isPathShown = false;
+
+        // ⭐️ 1. 여러 개의 목표 지점 설정 (지그재그 좌표 배치)
+        // 0.2~0.4는 좌측, 0.6~0.8은 우측으로 설정했습니다.
+        const TARGET_AREAS = [
+            {
+                name: "첫 번째 행성: Planet A",
+                xMin: window.innerWidth * 0.2, xMax: window.innerWidth * 0.4,
+                yMin: window.innerHeight * 0.2, yMax: window.innerHeight * 0.4,
+                image: "planet1.png",
+                reached: false
+            },
+
+            {
+                name: "미지의 존재: Eating Alien",
+                xMin: window.innerWidth * 0.2, xMax: window.innerWidth * 0.4,
+                yMin: window.innerHeight * 0.6, yMax: window.innerHeight * 0.8,
+                image: "eatingalien.png",
+                reached: false
+            },
+            {
+                name: "버섯 행성: Mushroom Planet",
+                xMin: window.innerWidth * 0.7, xMax: window.innerWidth * 0.9,
+                yMin: window.innerHeight * 0.1, yMax: window.innerHeight * 0.3,
+                image: "mushroom.png",
+                reached: false
+            },
+
+
+
+            {
+                name: "울지 행성 도착",
+
+                xMin: window.innerWidth * 0.4, xMax: window.innerWidth * 0.6,
+                yMin: window.innerHeight * 0.7, yMax: window.innerHeight * 1,
+                image: "sparkle.png",
+                reached: false
+            },
+        ];
+
+
+
+
+        const movingPathContainer = document.getElementById('moving-path-container');
+        const movingPathImage = document.getElementById('moving-path');
+        const popupMessage = document.getElementById('popup-message'); // ⭐️ 문구 요소
+        const closeBtn = document.getElementById('close-popup-btn'); // ⭐️ 닫기 버튼
+
+
+
+        // ⭐️ 2. showMovingPathImage 함수 수정: 수동 닫기 로직
+        function showMovingPathImage(imageSrc, messageText) {
+            if (isPathShown) return;
+            isPathShown = true;
+            // isDrawing 중단 로직은 제거 (선이 이어짐)
+
+            movingPathImage.src = imageSrc;
+            popupMessage.textContent = messageText;// ⭐️ 문구 설정
+            movingPathImage.style.display = 'block';
+            movingPathContainer.style.display = 'flex'; // ⭐️ flex로 변경하여 내용 표시
+        }
+
+        // ⭐️ 3. 닫기 버튼 클릭 이벤트 핸들러 추가
+        function closePopup() {
+            movingPathImage.style.display = 'none';
+            movingPathContainer.style.display = 'none';
+            isPathShown = false; // ⭐️ 플래그 해제하여 다음 지점 감지 허용
+        }
+
+        closeBtn.addEventListener('click', closePopup); // 이벤트 리스너 연결
+
+
+
+
+
+
+
+        // --- 점 그리기 함수 (drawDot) ---
+        function drawDot(x, y) {
+            // ... (이전 drawDot 함수와 동일)
+            const dot = document.createElement('div');
+            dot.classList.add('dot-style');
+
+            const size = 30;
+            dot.style.left = (x - size / 2) + 'px';
+            dot.style.top = (y - size / 2) + 'px';
+            document.body.appendChild(dot);
+
+
+
+        }
+
+        // ⭐️ 4. 좌표 검사 함수 (최종 목적지 처리 수정)
+        function checkTargetArea(x, y) {
+            if (isPathShown) return;
+
+            for (let area of TARGET_AREAS) {
+                if (!area.reached &&
+                    x >= area.xMin && x <= area.xMax &&
+                    y >= area.yMin && y <= area.yMax) {
+
+                    area.reached = true;
+
+                    showMovingPathImage(area.image, area.name); // ⭐️ 이미지와 문구 전달
+
+                    // 최종 목적지에 도달했을 때 닫기 버튼 텍스트 변경
+                    if (area.name === "울지 행성 도착") {
+                        closeBtn.textContent = "다음 화면으로 이동"; // 텍스트 변경
+
+                        // 기존 closePopup 리스너 제거
+                        closeBtn.removeEventListener('click', closePopup);
+
+                        // 새로운 페이지 이동 리스너 연결
+                        closeBtn.addEventListener('click', () => {
+                            window.location.href = "03.html"; // 03.html로 이동
+                        });
+                    }
+
+
+                    return;
+                }
+
+
+            }
+        }
+
+
+        // --- 이벤트 리스너는 이전과 동일 ---
+        document.addEventListener('touchstart', (e) => {
+            isDrawing = true;
+            const x = e.touches[0].clientX;
+            const y = e.touches[0].clientY;
+            drawDot(x, y);
+            checkTargetArea(x, y);
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDrawing) return;
+
+            const x = e.touches[0].clientX;
+            const y = e.touches[0].clientY;
+
+            drawDot(x, y);
+            checkTargetArea(x, y);
+
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
 
     </script>
 </body>
-
-</html>

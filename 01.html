@@ -11,20 +11,24 @@
     <style>
         body {
             background-image: url;
-            color: rgb(71, 83, 216);
+            font-family: "Gugi", sans-serif;
+            font-weight: 400;
+            font-style: normal;
         }
 
 
-        #phone {
-            font-size: 10vw;
-            width: 12vw;
-            height: 12vw;
-            border-radius: 50%;
+        .mystuff {
+            width: 100px;
+            height: 100px;
             position: absolute;
-            top: 75vh;
-            left: 40vw;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
             cursor: pointer;
+            /* 드래그 가능함을 표시 */
         }
+
+
 
 
         #win {
@@ -45,38 +49,19 @@
             transform: translateX(-50%);
             font-size: 24px;
             display: none;
-
-
             z-index: 10;
-
-
         }
 
 
         #target {
             width: 200px;
-            /* JS의 (500)에 맞춤 */
             height: 200px;
-            /* JS의 (300)에 맞춤 */
             background-color: #dc858550;
-
-
             position: absolute;
             top: 70px;
-            /* JS의 top: 100에 맞춤 */
             left: 100px;
-            /* JS의 left: 300에 맞춤 */
             z-index: -1;
         }
-
-
-        ;
-
-
-
-
-
-
 
 
         @keyframes fadeIn {
@@ -91,8 +76,6 @@
         }
 
 
-
-
         #newplanet {
             animation-name: fadeIn;
             animation-delay: 8s;
@@ -102,11 +85,6 @@
             position: absolute;
             top: 30%;
             left: 10%;
-
-
-
-
-            /*초기상태*/
             opacity: 0;
             font-size: 60px;
             color: rgb(77, 44, 44);
@@ -117,34 +95,50 @@
 
 
 <body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
+    </style>
     <div id="win"></div>
     <div id="lose"></div>
-    <div id="phone">📱</div>
+
+    <div id="phone" class="mystuff" data-image="phone.png" data-start-left="40vw" data-start-top="75vh"
+        data-attempts="0"></div>
+    <div id="seed" class="mystuff" data-image="seed.png" data-start-left="60vw" data-start-top="70vh" data-attempts="0">
+    </div>
+    <div id="rainbow" class="mystuff" data-image="rainbow.png" data-start-left="20vw" data-start-top="65vh"
+        data-attempts="0"></div>
+    <div id="doll" class="mystuff" data-image="box_image.png" data-start-left="80vw" data-start-top="75vh"
+        data-attempts="0"></div>
+    <div id="door" class="mystuff" data-image="box_image.png" data-start-left="5vw" data-start-top="80vh"
+        data-attempts="0"></div>
+
     <div id="target"></div>
 
+
     <h>
-        <p>짐을 당겨서 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!
+        <p>짐을 당겼다 날려 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!
     </h>
     <a href="02.html">다음</a>
 
     <script>
-        const phone = document.getElementById('phone');
+        const mystuffs = document.querySelectorAll('.mystuff');
         const wincaption = document.getElementById('win')
         const losecaption = document.getElementById('lose')
         const target = document.getElementById('target');
+
+
+        let currentStuff = null;
 
 
         let isDragging = false;
         let startX, startY;
 
 
-        let attempts = 0;
-        let gamedone = false;
+
+        let gamedone = false; // 게임 전체 종료
 
 
         const FORCE_MULTIPLIER = 14;
-
-
 
 
         // 공이 착지할 최소 최대 거리
@@ -157,35 +151,53 @@
 
 
         const TARGET_AREA = {
-            top: 70, // 목표 Y 시작 픽셀 (예시 값)
-            bottom: 70 + 200, // 목표 Y 끝 픽셀 (높이 300px)
-            left: 100, // 목표 X 시작 픽셀 (예시 값)
-            right: 100 + 200 // 목표 X 끝 픽셀 (너비 500px)
+            top: 70,
+            bottom: 70 + 200,
+            left: 100,
+            right: 100 + 200
         };
 
 
-        function resetball(isFinalFix = false, finalX, finalY) {
-            phone.style.transition = 'none';
+        // 짐 초기 좌표로 초기화하는 함수
+        function initializeStuff(stuff) {
+            const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
+            const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
+            const imagePath = stuff.getAttribute('data-image');
+
+            stuff.style.left = initialLeft;
+            stuff.style.top = initialTop;
+            stuff.style.backgroundImage = `url('${imagePath}')`;
+            stuff.style.pointerEvents = 'auto'; // 모든 짐 활성화
+            stuff.style.transition = 'none';
+        }
+
+
+        mystuffs.forEach(initializeStuff);
+
+
+        // resetball 함수 (stuff 인수를 받음)
+        function resetball(stuff, isFinalFix = false, finalX, finalY) {
+            const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
+            const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
+
+            stuff.style.transition = 'none';
             wincaption.style.display = 'none';
             losecaption.style.display = 'none';
             if (!isFinalFix) {
-                // 실패 후 원점으로 돌아갈 때만 위치를 초기화합니다.
-                phone.style.transform = 'translate(0, 0)';
-                phone.style.left = INITIAL_LEFT;
-                phone.style.top = INITIAL_TOP;
+                stuff.style.transform = 'translate(0, 0)';
+                stuff.style.left = initialLeft; // stuff의 개별시작점 사용
+                stuff.style.top = initialTop;
             } else {
-                // 성공 또는 최종 실패 시: transform을 제거하고 최종 위치에 고정합니다.
-                phone.style.transform = 'translate(0, 0)';
-                phone.style.left = (finalX - phone.offsetWidth / 2) + 'px';
-                phone.style.top = (finalY - phone.offsetHeight / 2) + 'px';
+                stuff.style.transform = 'translate(0, 0)';
+                stuff.style.left = (finalX - stuff.offsetWidth / 2) + 'px';
+                stuff.style.top = (finalY - stuff.offsetHeight / 2) + 'px';
             }
         }
 
 
-
-
-        function winorlose(finalX, finalY) {
-            //타겟 좌표 안에 공의 중앙에 왔니?
+        // winorlose 함수 (stuff 인수를 받음)
+        function winorlose(stuff, finalX, finalY) {
+            //타겟 좌표 안에 짐의 중앙에 왔니?
             const isInsideTarget = (
                 finalX >= TARGET_AREA.left &&
                 finalX <= TARGET_AREA.right &&
@@ -195,31 +207,34 @@
 
 
             if (isInsideTarget) {
-                wincaption.textContent = `보내기 성공! 다음 짐을 던져주세요`;
+                // ⭐️ 성공 처리 로직
+                wincaption.textContent = `${stuff.id} 보내기 성공!`;
                 wincaption.style.display = 'block';
+                stuff.style.pointerEvents = 'none'; // 성공한 짐 비활성화
 
 
-                gamedone = true;
-                resetball(true, finalX, finalY);
+
+                resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정
                 return true;
             }
             else {
+                // 실패 처리 로직 (총 3회 제한)
+                let currentAttempts = parseInt(stuff.getAttribute('data-attempts')) + 1;
+                stuff.setAttribute('data-attempts', currentAttempts); // 시도 횟수 갱신
 
 
-                attempts++;
-                if (attempts <= 3) {
-                    losecaption.textContent = `보내기 실패! (${attempts} / 3회)`;
+                if (currentAttempts <= 3) {
+                    losecaption.textContent = `${stuff.id} 보내기 실패! 다시 시도해보세요! ${currentAttempts} / 3회`;
                     losecaption.style.display = 'block';
 
-
-
-
-                    setTimeout(() => resetball(false), 1000);
+                    setTimeout(() => resetball(stuff, false), 1000); // 1초 후 초기 위치로 복귀
                 } else {
-                    losecaption.textContent = `보내기 실패! 기회를 모두 소진했습니다.`;
+                    losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
                     losecaption.style.display = 'block';
-                    gamedone = true; // ⭐️ 4회 이상 실패 시 게임 종료
-                    resetball(true, finalX, finalY); // ⭐️ 던진 자리에 고정
+
+                    // ⭐️ 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
+                    stuff.style.pointerEvents = 'none';
+                    resetball(stuff, true, finalX, finalY);
                 }
 
 
@@ -228,57 +243,45 @@
         }
 
 
+        // touchstart 이벤트 등록
+        mystuffs.forEach(stuff => {
+            stuff.addEventListener('touchstart', (e) => {
+                // 실패 횟수 초과 시나, 이미 보낸 짐은 드래그 불가
+                if (gamedone || stuff.style.pointerEvents === 'none') return;
+                currentStuff = stuff;
+                isDragging = true;
+                startX = currentStuff.offsetLeft + currentStuff.offsetWidth / 2;
+                startY = currentStuff.offsetTop + currentStuff.offsetHeight / 2;
 
 
-        phone.addEventListener('touchstart', (e) => {
-            if (gamedone) return;
-            isDragging = true;
-            startX = phone.offsetLeft + phone.offsetWidth / 2;
-            startY = phone.offsetTop + phone.offsetHeight / 2;
+                e.preventDefault();
+                currentStuff.style.transition = 'none';
+            }, { passive: false });
+        });
 
 
-            e.preventDefault();
-            phone.style.transition = 'none';
-        }, { passive: false });
-
-
-
-
-
-
-
-
+        // touchmove 이벤트 처리
         document.addEventListener('touchmove', (e) => {
-            if (!isDragging || gamedone) return;
+            if (!isDragging || gamedone || !currentStuff) return;
             const touch = e.touches[0];
-            phone.style.left = (touch.clientX - phone.offsetWidth / 2) + 'px';
-            phone.style.top = (touch.clientY - phone.offsetHeight / 2) + 'px';
+            currentStuff.style.left = (touch.clientX - currentStuff.offsetWidth / 2) + 'px';
+            currentStuff.style.top = (touch.clientY - currentStuff.offsetHeight / 2) + 'px';
             e.preventDefault(); // 스크롤 방지
         }, { passive: false });
 
 
-
-
-
-
-
-
-
-
-
-
+        // touchend 이벤트 처리
         document.addEventListener('touchend', (e) => {
-            if (!isDragging || gamedone) return;
+            if (!isDragging || gamedone || !currentStuff) return;
             isDragging = false; //드래그끝
 
-
-
+            // currentStuff에서 stuffToThrow로 변수이름 바꾸는 부분
+            const stuffToThrow = currentStuff; // 던질 짐을 새 변수에 저장해서 역할 구분
+            currentStuff = null; // 현재 짐 currentStuff은 초기화
 
             const touch = e.changedTouches[0];
             let endX = touch.clientX;
             let endY = touch.clientY;
-
-
 
 
             //던질 방향을 계산! = vector
@@ -297,17 +300,11 @@
             const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
 
 
-
-
             //공이 날아갈 최종 벡터 계산을 위해 초기화
             let movingX = 0;
             let movingY = 0;
-            let finalX = phone.offsetLeft + phone.offsetWidth / 2;
-            let finalY = phone.offsetTop + phone.offsetHeight / 2;
-
-
-
-
+            let finalX = stuffToThrow.offsetLeft + stuffToThrow.offsetWidth / 2;
+            let finalY = stuffToThrow.offsetTop + stuffToThrow.offsetHeight / 2;
 
 
             // 당긴 힘이 0이 아닐 때만 적용
@@ -321,32 +318,20 @@
 
 
                 //최종도착좌표
-                finalX = phone.offsetLeft + movingX + (phone.offsetWidth / 2);
-                finalY = phone.offsetTop + movingY + (phone.offsetHeight / 2);
+                finalX = stuffToThrow.offsetLeft + movingX + (stuffToThrow.offsetWidth / 2);
+                finalY = stuffToThrow.offsetTop + movingY + (stuffToThrow.offsetHeight / 2);
 
 
-                // 타겟 좌표 기준으로 승패
-
-
-
-
-                phone.style.transition = 'transform 1s ease-out';
-                phone.style.transform = `translate(${movingX}px, ${movingY}px)`;
+                stuffToThrow.style.transition = 'transform 1s ease-out';
+                stuffToThrow.style.transform = `translate(${movingX}px, ${movingY}px)`;
             }
 
 
             setTimeout(() => {
-                winorlose(finalX, finalY);
+                winorlose(stuffToThrow, finalX, finalY); // stuffToThrow 전달
             }, 1000);
         });
-
-
-
-
-
-
     </script>
 </body>
-
 
 </html>
