@@ -14,13 +14,13 @@
             background-image: url('earthback.png');
             background-repeat: no-repeat;
             background-size: cover;
-
-
-
+            background-size: 60vh;
+            left: 30%;
             font-family: "Gugi", sans-serif;
             font-weight: 400;
             font-style: normal;
             font-size: 20px;
+
         }
 
         @keyframes fall {
@@ -48,6 +48,13 @@
             }
 
 
+
+        }
+
+        #start {
+            position: relative;
+
+            z-index: 999;
 
         }
 
@@ -80,26 +87,25 @@
             top: 0%;
             left: 13%;
             animation-iteration-count: infinite;
-            /* ✨ 스크린 효과 적용 */
+
             mix-blend-mode: hard-light;
-            /* 혹은 오버레이 효과: mix-blend-mode: overlay; */
-            /* 불투명도 조정 (선택 사항) */
+
             opacity: 1;
-            /* 반짝임 애니메이션 적용 */
+
             animation: blinkCircle 1.5s infinite alternate;
         }
 
 
-        /* #lightcircle 에 사용할 반짝임 애니메이션 (속도를 다르게 설정) */
+
         @keyframes blinkCircle {
             0% {
                 opacity: 0;
-                /* 최소 불투명도 */
+
             }
 
             100% {
                 opacity: 0.6;
-                /* 최소 불투명도로 돌아옴 */
+
             }
         }
 
@@ -150,8 +156,13 @@
 </head>
 
 <body>
+    <img id="lightrain" src="lightrain.png" alt="lightrain">
+    <img id="lightcircle" src="lightcircle.png" alt="lightcircle">
 
-    <a href="introduce1.html">다음</a>
+
+    <a id="start" href="introduce1.html">시작!</a>
+
+    <ha>지구가 망했다! 이사가자!!</ha>
 
     <ha>지구가 망했다! 이사가자!!</ha>
     <div id="a" class="titlewords" data-image="a.png"> </div>
@@ -160,9 +171,6 @@
     <div id="d" class="titlewords" data-image="d.png"></div>
     <div id="e" class="titlewords" data-image="e.png"></div>
     <div id="f" class="titlewords" data-image="f.png"></div>
-
-    <img id="lightrain" src="lightrain.png" alt="lightrain">
-    <img id="lightcircle" src="lightcircle.png" alt="lightcircle">
 
 
     <script>
