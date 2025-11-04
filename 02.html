@@ -63,6 +63,29 @@
             display: none;
         }
 
+        #lightrain {
+            height: 90vh;
+            left: 0%;
+            position: absolute;
+            animation-iteration-count: infinite;
+
+            mix-blend-mode: overlay;
+            opacity: 1;
+            animation: blinkRain 0.3s infinite alternate;
+        }
+
+        @keyframes blinkRain {
+            0% {
+                opacity: 0;
+                /* 최소 불투명도 */
+            }
+
+            100% {
+                opacity: 1;
+                /* 최소 불투명도로 돌아옴 */
+            }
+        }
+
         #moving-path-container img {
             max-width: 80vw;
             max-height: 50vh;
@@ -111,9 +134,10 @@
         <img id="moving-path" src="" alt="이동 경로 이미지">
         <button id="close-popup-btn">계속 이동하기</button>
         <a href="03.html"></a>
+        <img id="fog" src="fog.png" alt="fog">
     </div>
 
-    <h>울지 행성으로 이동중..</h>
+    <h>울지 행성으로 이동중... </h>
     <script>
         let isDrawing = false;
         let isPathShown = false;

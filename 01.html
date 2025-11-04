@@ -29,6 +29,41 @@
         }
 
 
+        #myVideo {
+
+            width: 30vh;
+            /* height는 비디오 비율에 따라 자동 조절되도록 제거하거나 'auto'로 설정하는 것이 좋습니다. */
+
+            position: absolute;
+
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            display: flex;
+            opacity: 0;
+            border-style: solid;
+            border-width: 10px;
+            border-color: rgb(75, 75, 202);
+            animation: blinkvid 8s
+        }
+
+        @keyframes blinkvid {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
 
 
         #win {
@@ -98,6 +133,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
     </style>
+
+    </video>
+
+
+
     <div id="win"></div>
     <div id="lose"></div>
 
@@ -119,218 +159,224 @@
         <p>짐을 당겼다 날려 외계 행성으로 보내주세요</p>외계인 시야에 들지 않게 보내야 해요!
     </h>
     <a href="02.html">다음</a>
-
-    <script>
-        const mystuffs = document.querySelectorAll('.mystuff');
-        const wincaption = document.getElementById('win')
-        const losecaption = document.getElementById('lose')
-        const target = document.getElementById('target');
-
-
-        let currentStuff = null;
-
-
-        let isDragging = false;
-        let startX, startY;
+    <video id="myVideo" autoplay muted loop>
+        <source src="playvideo.mp4" type="video/mp4">
 
 
 
-        let gamedone = false; // 게임 전체 종료
 
 
-        const FORCE_MULTIPLIER = 14;
+        <script>
+            const mystuffs = document.querySelectorAll('.mystuff');
+            const wincaption = document.getElementById('win')
+            const losecaption = document.getElementById('lose')
+            const target = document.getElementById('target');
 
 
-        // 공이 착지할 최소 최대 거리
-        const MIN_TRAVEL = 200;
-        const MAX_TRAVEL = 600;
+            let currentStuff = null;
 
 
-        const INITIAL_LEFT = '40vw';
-        const INITIAL_TOP = '60vh';
+            let isDragging = false;
+            let startX, startY;
 
 
-        const TARGET_AREA = {
-            top: 70,
-            bottom: 70 + 200,
-            left: 100,
-            right: 100 + 200
-        };
+
+            let gamedone = false; // 게임 전체 종료
 
 
-        // 짐 초기 좌표로 초기화하는 함수
-        function initializeStuff(stuff) {
-            const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
-            const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
-            const imagePath = stuff.getAttribute('data-image');
-
-            stuff.style.left = initialLeft;
-            stuff.style.top = initialTop;
-            stuff.style.backgroundImage = `url('${imagePath}')`;
-            stuff.style.pointerEvents = 'auto'; // 모든 짐 활성화
-            stuff.style.transition = 'none';
-        }
+            const FORCE_MULTIPLIER = 14;
 
 
-        mystuffs.forEach(initializeStuff);
+            // 공이 착지할 최소 최대 거리
+            const MIN_TRAVEL = 200;
+            const MAX_TRAVEL = 600;
 
 
-        // resetball 함수 (stuff 인수를 받음)
-        function resetball(stuff, isFinalFix = false, finalX, finalY) {
-            const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
-            const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
+            const INITIAL_LEFT = '40vw';
+            const INITIAL_TOP = '60vh';
 
-            stuff.style.transition = 'none';
-            console.log('asdf');
-            wincaption.style.display = 'none';
-            losecaption.style.display = 'none';
-            if (!isFinalFix) {
-                stuff.style.transform = 'translate(0, 0)';
-                stuff.style.left = initialLeft; // stuff의 개별시작점 사용
+
+            const TARGET_AREA = {
+                top: 70,
+                bottom: 70 + 200,
+                left: 100,
+                right: 100 + 200
+            };
+
+
+            // 짐 초기 좌표로 초기화하는 함수
+            function initializeStuff(stuff) {
+                const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
+                const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
+                const imagePath = stuff.getAttribute('data-image');
+
+                stuff.style.left = initialLeft;
                 stuff.style.top = initialTop;
-            } else {
-                stuff.style.transform = 'translate(0, 0)';
-                stuff.style.left = (finalX - stuff.offsetWidth / 2) + 'px';
-                stuff.style.top = (finalY - stuff.offsetHeight / 2) + 'px';
+                stuff.style.backgroundImage = `url('${imagePath}')`;
+                stuff.style.pointerEvents = 'auto'; // 모든 짐 활성화
+                stuff.style.transition = 'none';
             }
-        }
 
 
-        // winorlose 함수 (stuff 인수를 받음)
-        function winorlose(stuff, finalX, finalY) {
-            //타겟 좌표 안에 짐의 중앙에 왔니?
-            const isInsideTarget = (
-                finalX >= TARGET_AREA.left &&
-                finalX <= TARGET_AREA.right &&
-                finalY >= TARGET_AREA.top &&
-                finalY <= TARGET_AREA.bottom
-            );
+            mystuffs.forEach(initializeStuff);
 
 
-            if (isInsideTarget) {
-                // ⭐️ 성공 처리 로직
-                resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정 console.log(wincaption);
-                wincaption.textContent = `${stuff.id} 보내기 성공!`;
-                wincaption.style.display = 'block';
-                stuff.style.pointerEvents = 'none'; // 성공한 짐 비활성화
-                return true;
-            }
-            else {
-                // 실패 처리 로직 (총 3회 제한)
-                let currentAttempts = parseInt(stuff.getAttribute('data-attempts')) + 1;
-                stuff.setAttribute('data-attempts', currentAttempts); // 시도 횟수 갱신
+            // resetball 함수 (stuff 인수를 받음)
+            function resetball(stuff, isFinalFix = false, finalX, finalY) {
+                const initialLeft = stuff.getAttribute('data-start-left') || INITIAL_LEFT;
+                const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
 
-
-                if (currentAttempts <= 3) {
-                    losecaption.textContent = `${stuff.id} 보내기 실패! 다시 시도해보세요! ${currentAttempts} / 3회`;
-                    losecaption.style.display = 'block';
-
-                    setTimeout(() => resetball(stuff, false), 1000); // 1초 후 초기 위치로 복귀
+                stuff.style.transition = 'none';
+                console.log('asdf');
+                wincaption.style.display = 'none';
+                losecaption.style.display = 'none';
+                if (!isFinalFix) {
+                    stuff.style.transform = 'translate(0, 0)';
+                    stuff.style.left = initialLeft; // stuff의 개별시작점 사용
+                    stuff.style.top = initialTop;
                 } else {
-                    resetball(stuff, true, finalX, finalY);
-                    losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
-                    losecaption.style.display = 'block';
+                    stuff.style.transform = 'translate(0, 0)';
+                    stuff.style.left = (finalX - stuff.offsetWidth / 2) + 'px';
+                    stuff.style.top = (finalY - stuff.offsetHeight / 2) + 'px';
+                }
+            }
 
-                    // ⭐️ 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
-                    stuff.style.pointerEvents = 'none';
 
+            // winorlose 함수 (stuff 인수를 받음)
+            function winorlose(stuff, finalX, finalY) {
+                //타겟 좌표 안에 짐의 중앙에 왔니?
+                const isInsideTarget = (
+                    finalX >= TARGET_AREA.left &&
+                    finalX <= TARGET_AREA.right &&
+                    finalY >= TARGET_AREA.top &&
+                    finalY <= TARGET_AREA.bottom
+                );
+
+
+                if (isInsideTarget) {
+                    // ⭐️ 성공 처리 로직
+                    resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정 console.log(wincaption);
+                    wincaption.textContent = `${stuff.id} 보내기 성공!`;
+                    wincaption.style.display = 'block';
+                    stuff.style.pointerEvents = 'none'; // 성공한 짐 비활성화
+                    return true;
+                }
+                else {
+                    // 실패 처리 로직 (총 3회 제한)
+                    let currentAttempts = parseInt(stuff.getAttribute('data-attempts')) + 1;
+                    stuff.setAttribute('data-attempts', currentAttempts); // 시도 횟수 갱신
+
+
+                    if (currentAttempts <= 3) {
+                        losecaption.textContent = `${stuff.id} 보내기 실패! 다시 시도해보세요! ${currentAttempts} / 3회`;
+                        losecaption.style.display = 'block';
+
+                        setTimeout(() => resetball(stuff, false), 1000); // 1초 후 초기 위치로 복귀
+                    } else {
+                        resetball(stuff, true, finalX, finalY);
+                        losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
+                        losecaption.style.display = 'block';
+
+                        // ⭐️ 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
+                        stuff.style.pointerEvents = 'none';
+
+                    }
+
+
+                    return false;
+                }
+            }
+
+
+            // touchstart 이벤트 등록
+            mystuffs.forEach(stuff => {
+                stuff.addEventListener('touchstart', (e) => {
+                    // 실패 횟수 초과 시나, 이미 보낸 짐은 드래그 불가
+                    if (gamedone || stuff.style.pointerEvents === 'none') return;
+                    currentStuff = stuff;
+                    isDragging = true;
+                    startX = currentStuff.offsetLeft + currentStuff.offsetWidth / 2;
+                    startY = currentStuff.offsetTop + currentStuff.offsetHeight / 2;
+
+
+                    e.preventDefault();
+                    currentStuff.style.transition = 'none';
+                }, { passive: false });
+            });
+
+
+            // touchmove 이벤트 처리
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging || gamedone || !currentStuff) return;
+                const touch = e.touches[0];
+                currentStuff.style.left = (touch.clientX - currentStuff.offsetWidth / 2) + 'px';
+                currentStuff.style.top = (touch.clientY - currentStuff.offsetHeight / 2) + 'px';
+                e.preventDefault(); // 스크롤 방지
+            }, { passive: false });
+
+
+            // touchend 이벤트 처리
+            document.addEventListener('touchend', (e) => {
+                if (!isDragging || gamedone || !currentStuff) return;
+                isDragging = false; //드래그끝
+
+                // currentStuff에서 stuffToThrow로 변수이름 바꾸는 부분
+                const stuffToThrow = currentStuff; // 던질 짐을 새 변수에 저장해서 역할 구분
+                currentStuff = null; // 현재 짐 currentStuff은 초기화
+
+                const touch = e.changedTouches[0];
+                let endX = touch.clientX;
+                let endY = touch.clientY;
+
+
+                //던질 방향을 계산! = vector
+                let directionX = (startX - endX) * FORCE_MULTIPLIER;
+                let directionY = (startY - endY) * FORCE_MULTIPLIER;
+
+
+                // Magnitude=힘의 크기 계산
+                let originalMagnitude = Math.sqrt(
+                    (directionX * directionX) + (directionY * directionY)
+                );
+
+
+                //총 날아갈 거리 랜덤
+                const randomTravelRange = MAX_TRAVEL - MIN_TRAVEL;
+                const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
+
+
+                //공이 날아갈 최종 벡터 계산을 위해 초기화
+                let movingX = 0;
+                let movingY = 0;
+                let finalX = stuffToThrow.offsetLeft + stuffToThrow.offsetWidth / 2;
+                let finalY = stuffToThrow.offsetTop + stuffToThrow.offsetHeight / 2;
+
+
+                // 당긴 힘이 0이 아닐 때만 적용
+                if (originalMagnitude > 0) {
+
+
+                    // (랜덤 크기 / 원래 크기) 비율을 각 방향 벡터에 곱해 크기를 조정합니다.
+                    const scaleFactor = randomMagnitude / originalMagnitude;
+                    movingX = directionX * scaleFactor;
+                    movingY = directionY * scaleFactor;
+
+
+                    //최종도착좌표
+                    finalX = stuffToThrow.offsetLeft + movingX + (stuffToThrow.offsetWidth / 2);
+                    finalY = stuffToThrow.offsetTop + movingY + (stuffToThrow.offsetHeight / 2);
+
+
+                    stuffToThrow.style.transition = 'transform 1s ease-out';
+                    stuffToThrow.style.transform = `translate(${movingX}px, ${movingY}px)`;
                 }
 
 
-                return false;
-            }
-        }
-
-
-        // touchstart 이벤트 등록
-        mystuffs.forEach(stuff => {
-            stuff.addEventListener('touchstart', (e) => {
-                // 실패 횟수 초과 시나, 이미 보낸 짐은 드래그 불가
-                if (gamedone || stuff.style.pointerEvents === 'none') return;
-                currentStuff = stuff;
-                isDragging = true;
-                startX = currentStuff.offsetLeft + currentStuff.offsetWidth / 2;
-                startY = currentStuff.offsetTop + currentStuff.offsetHeight / 2;
-
-
-                e.preventDefault();
-                currentStuff.style.transition = 'none';
-            }, { passive: false });
-        });
-
-
-        // touchmove 이벤트 처리
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging || gamedone || !currentStuff) return;
-            const touch = e.touches[0];
-            currentStuff.style.left = (touch.clientX - currentStuff.offsetWidth / 2) + 'px';
-            currentStuff.style.top = (touch.clientY - currentStuff.offsetHeight / 2) + 'px';
-            e.preventDefault(); // 스크롤 방지
-        }, { passive: false });
-
-
-        // touchend 이벤트 처리
-        document.addEventListener('touchend', (e) => {
-            if (!isDragging || gamedone || !currentStuff) return;
-            isDragging = false; //드래그끝
-
-            // currentStuff에서 stuffToThrow로 변수이름 바꾸는 부분
-            const stuffToThrow = currentStuff; // 던질 짐을 새 변수에 저장해서 역할 구분
-            currentStuff = null; // 현재 짐 currentStuff은 초기화
-
-            const touch = e.changedTouches[0];
-            let endX = touch.clientX;
-            let endY = touch.clientY;
-
-
-            //던질 방향을 계산! = vector
-            let directionX = (startX - endX) * FORCE_MULTIPLIER;
-            let directionY = (startY - endY) * FORCE_MULTIPLIER;
-
-
-            // Magnitude=힘의 크기 계산
-            let originalMagnitude = Math.sqrt(
-                (directionX * directionX) + (directionY * directionY)
-            );
-
-
-            //총 날아갈 거리 랜덤
-            const randomTravelRange = MAX_TRAVEL - MIN_TRAVEL;
-            const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
-
-
-            //공이 날아갈 최종 벡터 계산을 위해 초기화
-            let movingX = 0;
-            let movingY = 0;
-            let finalX = stuffToThrow.offsetLeft + stuffToThrow.offsetWidth / 2;
-            let finalY = stuffToThrow.offsetTop + stuffToThrow.offsetHeight / 2;
-
-
-            // 당긴 힘이 0이 아닐 때만 적용
-            if (originalMagnitude > 0) {
-
-
-                // (랜덤 크기 / 원래 크기) 비율을 각 방향 벡터에 곱해 크기를 조정합니다.
-                const scaleFactor = randomMagnitude / originalMagnitude;
-                movingX = directionX * scaleFactor;
-                movingY = directionY * scaleFactor;
-
-
-                //최종도착좌표
-                finalX = stuffToThrow.offsetLeft + movingX + (stuffToThrow.offsetWidth / 2);
-                finalY = stuffToThrow.offsetTop + movingY + (stuffToThrow.offsetHeight / 2);
-
-
-                stuffToThrow.style.transition = 'transform 1s ease-out';
-                stuffToThrow.style.transform = `translate(${movingX}px, ${movingY}px)`;
-            }
-
-
-            setTimeout(() => {
-                winorlose(stuffToThrow, finalX, finalY); // stuffToThrow 전달
-            }, 1000);
-        });
-    </script>
+                setTimeout(() => {
+                    winorlose(stuffToThrow, finalX, finalY); // stuffToThrow 전달
+                }, 1000);
+            });
+        </script>
 </body>
 
 </html>
