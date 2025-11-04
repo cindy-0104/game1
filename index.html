@@ -14,13 +14,13 @@
             background-image: url('earthback.png');
             background-repeat: no-repeat;
             background-size: cover;
-            background-size: 200vh;
+
 
 
             font-family: "Gugi", sans-serif;
             font-weight: 400;
             font-style: normal;
-            font-size: 50px;
+            font-size: 20px;
         }
 
         @keyframes fall {
@@ -52,27 +52,63 @@
         }
 
         #lightrain {
-            height: 300vh;
+            height: 90vh;
+            left: 0%;
             position: absolute;
             animation-iteration-count: infinite;
 
+            mix-blend-mode: overlay;
+            opacity: 1;
+            animation: blinkRain 0.3s infinite alternate;
+        }
+
+        @keyframes blinkRain {
+            0% {
+                opacity: 0;
+                /* 최소 불투명도 */
+            }
+
+            100% {
+                opacity: 1;
+                /* 최소 불투명도로 돌아옴 */
+            }
         }
 
         #lightcircle {
-            height: 300vh;
+            height: 85vh;
             position: absolute;
+            top: 0%;
+            left: 13%;
             animation-iteration-count: infinite;
-
+            /* ✨ 스크린 효과 적용 */
+            mix-blend-mode: hard-light;
+            /* 혹은 오버레이 효과: mix-blend-mode: overlay; */
+            /* 불투명도 조정 (선택 사항) */
+            opacity: 1;
+            /* 반짝임 애니메이션 적용 */
+            animation: blinkCircle 1.5s infinite alternate;
         }
 
 
+        /* #lightcircle 에 사용할 반짝임 애니메이션 (속도를 다르게 설정) */
+        @keyframes blinkCircle {
+            0% {
+                opacity: 0;
+                /* 최소 불투명도 */
+            }
+
+            100% {
+                opacity: 0.6;
+                /* 최소 불투명도로 돌아옴 */
+            }
+        }
 
 
         .titlewords {
-            height: 1200px;
-            width: 1200px;
+            height: 50vh;
+            width: 50vh;
+
             position: absolute;
-            top: 60%;
 
             animation-name: fall;
             animation-duration: 5s;
@@ -145,8 +181,7 @@
 
 
         });
-        e.preventDefault();
-        { passive: false }
+
     </script>
 
 </body>
