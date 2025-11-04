@@ -3,31 +3,131 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=a.0">
     <title>표지</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
 
         body {
+            overflow: hidden;
+            background-image: url('earthback.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+
             font-family: "Gugi", sans-serif;
             font-weight: 400;
             font-style: normal;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+
+
+            30% {
+                transform: translateY(30vh);
+                opacity: 1;
+            }
+
+            90% {
+                transform: translateY(0);
+                opacity: 1;
+
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 0;
+
+            }
+
+
+
+        }
+
+        .titlewords {
+            height: 300px;
+            width: 300px;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+
+            animation-name: fall;
+            animation-duration: 5s;
+            animation-timing-function: cubic-bezier(0.68, 0.32, 1.6);
+            animation-fill-mode: forwards;
+            animation-iteration-count: infinite;
+
+            opacity: 0;
+
+        }
+
+
+        #a {
+            animation-delay: 0s;
+
+        }
+
+        #b {
+            animation-delay: 0.2s;
+        }
+
+        #c {
+            animation-delay: 0.1s;
+        }
+
+        #d {
+            animation-delay: 0.4s;
+        }
+
+        #e {
+            animation-delay: 0.8s;
+        }
+
+        #f {
+            animation-delay: 0.6s;
+
         }
     </style>
 </head>
 
 <body>
 
-    <a href="introduce1.html">다음
+    <a href="introduce1.html">다음</a>
 
-    </a>
+    <ha>지구가 망했다! 이사가자!!</ha>
+    <div id="a" class="titlewords" data-image="a.png"> </div>
+    <div id="b" class="titlewords" data-image="b.png"> </div>
+    <div id="c" class="titlewords" data-image="c.png"></div>
+    <div id="d" class="titlewords" data-image="d.png"></div>
+    <div id="e" class="titlewords" data-image="e.png"></div>
+    <div id="f" class="titlewords" data-image="f.png"></div>
 
-    <h>지구가 망했다! 이사가자!!</h>
+
+    <script>
 
 
+        const titleWords = document.querySelectorAll('.titlewords');
+
+        titleWords.forEach(wordDiv => {
+
+            const imagePath = wordDiv.getAttribute('data-image');
+
+            wordDiv.style.backgroundImage = `url('${imagePath}')`;
+            wordDiv.style.backgroundSize = 'cover';
+            wordDiv.style.backgroundPosition = 'center';
+            wordDiv.style.opacity = 1;
+        });
 
     </script>
+
+</body>
+
+</html>
 </body>
 
 </html>
