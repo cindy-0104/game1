@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=a.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>표지</title>
 
     <style>
@@ -14,11 +14,13 @@
             background-image: url('earthback.png');
             background-repeat: no-repeat;
             background-size: cover;
-            background-position: center;
+            background-size: 200vh;
+
 
             font-family: "Gugi", sans-serif;
             font-weight: 400;
             font-style: normal;
+            font-size: 50px;
         }
 
         @keyframes fall {
@@ -49,16 +51,32 @@
 
         }
 
-        .titlewords {
-            height: 300px;
-            width: 300px;
+        #lightrain {
+            height: 300vh;
             position: absolute;
-            top: 20%;
-            left: 20%;
+            animation-iteration-count: infinite;
+
+        }
+
+        #lightcircle {
+            height: 300vh;
+            position: absolute;
+            animation-iteration-count: infinite;
+
+        }
+
+
+
+
+        .titlewords {
+            height: 1200px;
+            width: 1200px;
+            position: absolute;
+            top: 60%;
 
             animation-name: fall;
             animation-duration: 5s;
-            animation-timing-function: cubic-bezier(0.68, 0.32, 1.6);
+            animation-timing-function: cubic-bezier(0.32, 1.6);
             animation-fill-mode: forwards;
             animation-iteration-count: infinite;
 
@@ -107,6 +125,9 @@
     <div id="e" class="titlewords" data-image="e.png"></div>
     <div id="f" class="titlewords" data-image="f.png"></div>
 
+    <img id="lightrain" src="lightrain.png" alt="lightrain">
+    <img id="lightcircle" src="lightcircle.png" alt="lightcircle">
+
 
     <script>
 
@@ -121,8 +142,11 @@
             wordDiv.style.backgroundSize = 'cover';
             wordDiv.style.backgroundPosition = 'center';
             wordDiv.style.opacity = 1;
-        });
 
+
+        });
+        e.preventDefault();
+        { passive: false }
     </script>
 
 </body>

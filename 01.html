@@ -35,7 +35,7 @@
             position: absolute;
             top: 5vh;
             left: 50%;
-            transform: translateX(-50%) !important;
+            transform: translateX(-50%);
             font-size: 24px;
             display: none;
             z-index: 10;
@@ -181,6 +181,7 @@
             const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
 
             stuff.style.transition = 'none';
+            console.log('asdf');
             wincaption.style.display = 'none';
             losecaption.style.display = 'none';
             if (!isFinalFix) {
@@ -208,13 +209,10 @@
 
             if (isInsideTarget) {
                 // ⭐️ 성공 처리 로직
+                resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정 console.log(wincaption);
                 wincaption.textContent = `${stuff.id} 보내기 성공!`;
                 wincaption.style.display = 'block';
                 stuff.style.pointerEvents = 'none'; // 성공한 짐 비활성화
-
-
-
-                resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정
                 return true;
             }
             else {
@@ -229,12 +227,13 @@
 
                     setTimeout(() => resetball(stuff, false), 1000); // 1초 후 초기 위치로 복귀
                 } else {
+                    resetball(stuff, true, finalX, finalY);
                     losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
                     losecaption.style.display = 'block';
 
                     // ⭐️ 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
                     stuff.style.pointerEvents = 'none';
-                    resetball(stuff, true, finalX, finalY);
+
                 }
 
 
