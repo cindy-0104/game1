@@ -19,8 +19,8 @@
             background-image: url('bookback.png');
             background-repeat: no-repeat;
             background-size: cover;
-            background-size: 60vh;
-            left: 30%;
+            background-size: 110%;
+
             font-family: "Gugi", sans-serif;
             font-weight: 400;
             font-style: normal;
@@ -137,7 +137,7 @@
 
 
         #book1 {
-            height: 101vh;
+            height: 100%;
             top: 0%;
             left: 0%;
             position: absolute;
@@ -159,7 +159,7 @@
         }
 
         #book2 {
-            height: 101vh;
+            height: 100%;
             top: 0%;
             left: 0%;
             position: absolute;
@@ -183,7 +183,7 @@
         }
 
         #book3 {
-            height: 101vh;
+            height: 100%;
             top: 0%;
             left: 0%;
             position: absolute;
@@ -208,7 +208,7 @@
         }
 
         #bookinside {
-            height: 101vh;
+            height: 100%;
             top: 0%;
             left: 0%;
             position: absolute;
@@ -231,12 +231,80 @@
 
             }
         }
+
+
+
+        #doodle1 {
+            height: 150vh;
+
+            top: 0%;
+            right: 0%;
+
+            opacity: 1;
+
+
+            animation-delay: s;
+            animation-fill-mode: forwards;
+
+        }
+
+        #doodle2 {
+            height: 100vh;
+            top: 0%;
+            right: 20%;
+            position: absolute;
+            opacity: 1;
+            z-index: -500;
+
+            animation-delay: s;
+            animation-fill-mode: forwards;
+
+        }
+
+
+        #move-popup-btn {
+            top: 75%;
+            left: 27%;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #c36678;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            z-index: 1200;
+            display: solid;
+            justify-content: center;
+            align-items: center;
+            font-family: "Gugi", sans-serif;
+
+            position: absolute;
+            opacity: 0;
+            animation: moveto 3s;
+            animation-delay: 45s;
+            animation-fill-mode: forwards;
+
+        }
+
+        @keyframes moveto {
+            0% {
+                opacity: 0;
+
+            }
+
+            100% {
+                opacity: 1;
+
+            }
+
+        }
     </style>
 </head>
 
 <body>
 
-    <a href="introduce2.html">다음 </a>
+
 
     <body>
 
@@ -248,7 +316,7 @@
             <span id="line3" class="synopsis-line">외계행성 woolsey 21-C로의 이사를 </span>
             <span id="line4" class="synopsis-line">결심한다! 지구에서 소중했던 짐들을 </span>
             <span id="line5" class="synopsis-line">울지로 던져 보내는데에 성공하면 </span>
-            <span id="line6" class="synopsis-line">이사를할 수 있을 것이다. </span>
+            <span id="line6" class="synopsis-line">이사를 할 수 있을 것이다. </span>
             <span id="line7" class="synopsis-line">하지만 외계행성의 원 주민, </span>
             <span id="line8" class="synopsis-line">외계생명 울지들의 레이더에 </span>
             <span id="line9" class="synopsis-line">걸리면 소중한 짐이 먹혀버릴테니 조심해!</span>
@@ -257,6 +325,13 @@
             <span id="line12" class="synopsis-line">나의 짐이 도착한 새 보금자리는 </span>
             <span id="line13" class="synopsis-line">어떤 모습일까?</span>
         </div>
+
+
+        <img id="doodle1" src="doodle1.png" alt="doodle1">
+        <img id="doodle2" src="doodle2.png" alt="doodle2">
+
+        <button id="move-popup-btn">어떤 짐을 가져갈까?</button>
+
 
         <script>
 
@@ -272,6 +347,16 @@
     <img id="bookinside" src="bookinside.png" alt="bookinside">
 
     <script>
+
+
+        const moveBtn = document.getElementById('move-popup-btn');
+
+        moveBtn.addEventListener('click', () => {
+            window.location.href = "introduce2.html";
+        })
+
+
+
 
     </script>
 

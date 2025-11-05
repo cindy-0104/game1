@@ -13,11 +13,11 @@
             overflow: hidden;
             background-image: url('earthback.png');
             background-repeat: no-repeat;
-            background-size: cover;
-            background-size: 60vh;
-            left: 30%;
+
+            background-size: 55vh;
+            left: 40%;
             font-family: "Gugi", sans-serif;
-            font-weight: 400;
+
             font-style: normal;
             font-size: 20px;
 
@@ -59,7 +59,7 @@
         }
 
         #lightrain {
-            height: 90vh;
+            height: 100%;
             left: 0%;
             position: absolute;
             animation-iteration-count: infinite;
@@ -82,10 +82,10 @@
         }
 
         #lightcircle {
-            height: 85vh;
+            height: 100%;
             position: absolute;
             top: 0%;
-            left: 13%;
+
             animation-iteration-count: infinite;
 
             mix-blend-mode: hard-light;
@@ -111,10 +111,10 @@
 
 
         .titlewords {
-            height: 50vh;
-            width: 50vh;
-
+            height: 85vh;
+            width: 85vw;
             position: absolute;
+            position: center;
 
             animation-name: fall;
             animation-duration: 5s;
@@ -152,6 +152,49 @@
             animation-delay: 0.6s;
 
         }
+
+
+        #move-popup-btn {
+            top: 15%;
+            left: 30%;
+            padding: 20px 20px;
+
+            font-family: "Gugi", sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #ffe2e8;
+
+            color: rgb(173, 65, 85);
+            border: none;
+            border-radius: 20%;
+            z-index: 9999;
+            display: solid;
+            justify-content: center;
+            align-items: center;
+
+
+            position: absolute;
+            opacity: 0;
+            animation: moveto 5s;
+            animation-delay: 3s;
+
+            animation-fill-mode: forwards;
+
+        }
+
+        @keyframes moveto {
+            0% {
+                opacity: 0;
+
+            }
+
+            100% {
+                opacity: 0.8;
+
+            }
+
+        }
     </style>
 </head>
 
@@ -160,17 +203,16 @@
     <img id="lightcircle" src="lightcircle.png" alt="lightcircle">
 
 
-    <a id="start" href="introduce1.html">시작!</a>
 
-    <ha>지구가 망했다! 이사가자!!</ha>
 
-    <ha>지구가 망했다! 이사가자!!</ha>
     <div id="a" class="titlewords" data-image="a.png"> </div>
     <div id="b" class="titlewords" data-image="b.png"> </div>
     <div id="c" class="titlewords" data-image="c.png"></div>
     <div id="d" class="titlewords" data-image="d.png"></div>
     <div id="e" class="titlewords" data-image="e.png"></div>
     <div id="f" class="titlewords" data-image="f.png"></div>
+
+    <button id="move-popup-btn">이사 시작하기</button>
 
 
     <script>
@@ -189,6 +231,13 @@
 
 
         });
+
+
+        const moveBtn = document.getElementById('move-popup-btn');
+
+        moveBtn.addEventListener('click', () => {
+            window.location.href = "introduce1.html";
+        })
 
     </script>
 

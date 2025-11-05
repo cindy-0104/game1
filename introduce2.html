@@ -10,24 +10,306 @@
         @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
 
         body {
+
+            background-image: url('bookback.png');
+
+            background-repeat: no-repeat;
+
+            background-size: 55vh;
+            left: 40%;
+
+            overflow: hidden;
+            display: absolute;
+            justify-content: center;
+            align-items: center;
             font-family: "Gugi", sans-serif;
-            font-weight: 400;
             font-style: normal;
+            text-align: center;
+        }
+
+
+        h1 {
+
+            font-size: 19px;
+            width: 90%;
+            top: 0%;
+            padding: 1px 10px;
+
+            font-weight: bold;
+
+            background-color: #8aa2e3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+
+            display: solid;
+            justify-content: center;
+            text-align: center;
+            font-family: "Gugi", sans-serif;
+
+            position: solid;
+
+
+        }
+
+
+        #next {
+
+            font-size: 20px;
+            top: 13%;
+            left: 40%;
+            padding: 10px 20px;
+
+            font-weight: bold;
+
+            background-color: #8b82eb;
+            color: white;
+            border: none;
+            border-radius: 16px;
+
+            display: solid;
+            justify-content: center;
+            align-items: center;
+            font-family: "Gugi", sans-serif;
+
+            position: absolute;
+            display: none;
+
+
+        }
+
+        .mystuff {
+            width: 35%;
+            height: 35%;
+            /* 클릭하기 쉽도록 크기 조정 */
+
+            position: absolute;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            animation-timing-function: cubic-bezier(0.32, 1.6);
+
+            animation: stuffsspin 7s infinite;
+
+
+        }
+
+        @keyframes stuffsspin {
+            20% {
+
+                transform: rotate(130deg) scale(0.8);
+            }
+
+            80% {
+
+                transform: rotate(-130deg) scale(1.4);
+            }
+
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+
+
+        #phone {
+            animation-delay: 0.2s;
+
+        }
+
+        #seed {
+            animation-delay: 0.9s;
+        }
+
+        #mirror {
+            animation-delay: .6s;
+        }
+
+
+        #door {
+            animation-delay: .8s;
+        }
+
+        #matcha {
+            animation-delay: .5s;
+        }
+
+
+        .mystuff:hover {
+            transform: scale(1.1);
+        }
+
+
+
+
+        #lightrain {
+            height: 100%;
+            left: 0%;
+            position: absolute;
+            animation-iteration-count: infinite;
+
+            mix-blend-mode: screen;
+            opacity: 1;
+            animation: blinkRain 0.6s infinite alternate;
+        }
+
+        @keyframes blinkRain {
+            0% {
+                opacity: 0;
+                /* 최소 불투명도 */
+            }
+
+            100% {
+                opacity: 0.7;
+                /* 최소 불투명도로 돌아옴 */
+            }
+        }
+
+
+        .explanation-content {
+            position: absolute;
+            position: center;
+            top: 30%;
+
+            background-color: rgb(114, 134, 214);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 70%;
+            z-index: 10000;
+            color: white;
+            font-family: "Gugi", sans-serif;
+        }
+
+        /* 닫기 버튼 */
+        .close-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #54dddd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Gugi", sans-serif;
+            z-index: 9999;
         }
     </style>
 </head>
 
 <body>
 
-    <a href="01.html">다음
+    <a id=next href="01.html">다음</a>
 
-    </a>
+    <h1>지구에서 꼭 챙겨가야 할 소중한 것들. <p>눌러서 어떤 것인지 확인해보자</p>
+    </h1>
 
-    <h>지구에서 꼭 챙겨가야할 소중한 것들. 눌러서 어떤 것인지 확인해보자</h>
+    <img id="lightrain" src="lightrain.png" alt="lightrain">
+
+    <div id="phone" class="mystuff" data-image="phone.png" data-start-left="23vw" data-start-top="40vh" data-name="휴대폰"
+        data-description="누구에게든 연락할 수 있어 안정감을 줬는데,,,"></div>
+    <div id="seed" class="mystuff" data-image="seed.png" data-start-left="50vw" data-start-top="10vh" data-name="생명의 씨앗"
+        data-description="함께 숨쉬고 있는 생명이 필요해"></div>
+    <div id="rainbow" class="mystuff" data-image="rainbow.png" data-start-left="10vw" data-start-top="65vh"
+        data-name="무지개 빛" data-description="물을 뿌리면 무지개가 보일지도 몰라 하루종일 무지개 끝을 쫓으면 살아 남을 수 있을 것 같아"></div>
+    <div id="mirror" class="mystuff" data-image="mirror.png" data-start-left="7vw" data-start-top="20vh" data-name="거울"
+        data-description="내 눈을 다시 볼 수 없을지도 몰라"></div>
+    <div id="door" class="mystuff" data-image="door.png" data-start-left="50vw" data-start-top="60vh" data-name="미래의 문"
+        data-description="언젠가는 내 사람들에게 돌아갈 문을 열 수 있을지 몰라"></div>
+    <div id="matcha" class="mystuff" data-image="matcha.png" data-start-left="60vw" data-start-top="30vh"
+        data-name="말차 라떼" data-description="특별한 한 잔이 필요할 것 같아"></div>
 
 
 
+
+    <div id="explanationWrapper" style="display: none;">
+        <div id="explanationModal" class="explanation-content">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <button class="close-button" onclick="closeExplanation()">닫기</button>
+        </div>
+    </div>
+
+
+    <script>
+        const mystuffs = document.querySelectorAll('.mystuff');
+        const wrapper = document.getElementById('explanationWrapper');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const nextButton = document.getElementById('next');
+
+        const stuffChecked = {};
+        mystuffs.forEach(stuff => {
+            stuffChecked[stuff.id] = false;
+        });
+
+
+        // ... (생략) ...
+
+        // 짐 초기화 및 스타일 설정 함수
+        function initializeStuff(stuff) {
+            // ⭐️ 초기 위치 값을 데이터 속성에서 가져옵니다.
+            const initialLeft = stuff.getAttribute('data-start-left');
+            const initialTop = stuff.getAttribute('data-start-top');
+            const imagePath = stuff.getAttribute('data-image');
+
+            // ⭐️ 스타일 적용
+            stuff.style.left = initialLeft;
+            stuff.style.top = initialTop;
+            stuff.style.backgroundImage = `url('${imagePath}')`;
+        }
+
+        // ⭐️ 모든 짐 초기화 (코드 추가)
+        mystuffs.forEach(initializeStuff);
+
+
+
+        // 짐 초기화 및 스타일 설정 함수
+        function checkAllStuffChecked() {
+            // stuffChecked 객체의 모든 값이 true인지 확인합니다.
+            const allChecked = Object.values(stuffChecked).every(isChecked => isChecked === true);
+
+            if (allChecked) {
+                // ⭐️ 모두 확인되었으면 버튼을 보이게 합니다.
+                nextButton.style.display = 'block';
+            }
+        }
+
+
+        // ⭐️ 팝업을 열고 정보 채우는 함수
+        function openExplanation(name, description, stuffId) { // 짐의 ID를 인수로 받습니다.
+            modalTitle.textContent = name;
+            modalDescription.textContent = description;
+            wrapper.style.display = 'flex';
+
+            // ⭐️ 짐의 상태를 '확인됨'으로 설정합니다.
+            stuffChecked[stuffId] = true;
+        }
+
+        // 팝업을 닫는 함수
+        function closeExplanation() {
+            wrapper.style.display = 'none';
+            // ⭐️ 팝업을 닫을 때마다 모든 짐이 확인되었는지 검사합니다.
+            checkAllStuffChecked();
+        }
+
+        // 모든 짐에 클릭 이벤트 리스너 추가
+        mystuffs.forEach(stuff => {
+            stuff.addEventListener('click', () => {
+                const name = stuff.getAttribute('data-name');
+                const description = stuff.getAttribute('data-description');
+
+                openExplanation(name, description, stuff.id);
+            });
+        });
+
+        // 전역 스코프에 closeExplanation 함수를 노출 (HTML onclick 사용을 위함)
+        window.closeExplanation = closeExplanation; 
     </script>
+
 </body>
 
 </html>
