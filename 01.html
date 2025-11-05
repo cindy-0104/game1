@@ -10,17 +10,18 @@
 
     <style>
         body {
-            background-image: url;
-            font-family: "Gugi", sans-serif;
-            font-weight: 400;
-            font-style: normal;
+            background-image: url('back01.png');
             overflow: hidden;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-repeat: no-repeat;
+
+            background-size: 55vh;
+            left: 40%;
+            font-family: "Gugi", sans-serif;
+
+            font-style: normal;
+            font-size: 15px;
+
 
 
         }
@@ -44,40 +45,66 @@
 
 
         #myVideo {
-            display: solid;
-            width: 80%;
+
+            display: block;
+
+            width: 70%;
             height: auto;
+
+
             border-style: solid;
             border-width: 10px;
-            border-color: #03b8a6;
+            border-radius: 10px;
+            border-color: #366dbb;
+
+
             z-index: 1000;
-
         }
-
-
-
 
 
 
         #win {
+
+            background-color: rgb(236, 247, 255);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            color: rgb(33, 12, 124);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            opacity: 1;
+            justify-content: center;
+            align-items: center;
             position: absolute;
             top: 5vh;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 24px;
+            font-size: 22px;
+            z-index: 9999;
             display: none;
-            z-index: 10;
+
         }
 
 
         #lose {
+            background-color: rgb(236, 247, 255);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            color: rgb(33, 12, 124);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            opacity: 1;
+            justify-content: center;
+            align-items: center;
             position: absolute;
             top: 5vh;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 24px;
+            font-size: 22px;
             display: none;
-            z-index: 10;
+            z-index: 9999;
+
         }
 
 
@@ -86,93 +113,112 @@
             height: 200px;
             background-color: #dc858550;
             position: absolute;
+            opacity: 0;
             top: 70px;
             left: 100px;
             z-index: -1;
         }
 
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-
-            to {
-                opacity: 1;
-            }
-        }
 
 
 
-
-
-
-        #move-popup-btn {
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            z-index: 10000;
-            font-family: "Gugi", sans-serif;
-
-            position: absolute;
-            opacity: 0;
-            animation: moveto 3s;
-
-            animation-fill-mode: forwards;
-
-        }
-
-        @keyframes moveto {
-            0% {
-                opacity: 0;
-
-            }
-
-            100% {
-                opacity: 1;
-
-            }
-
-        }
 
 
 
 
         /*설명창*/
         .explanation-content {
-            background-color: rgb(113, 121, 228);
-            padding: 30px;
+            width: 30%;
+            background-color: rgb(236, 247, 255);
+            padding: 10px;
+            left: 3%;
+            top: 0%;
             border-radius: 8px;
             text-align: center;
-            color: white;
+            color: rgb(33, 12, 124);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             width: 300px;
-            opacity: 0;
-            display: solid;
+            opacity: 1;
+
             justify-content: center;
             align-items: center;
 
             /* ⭐️ 다른 모든 요소보다 위에 오도록 높은 값 설정 */
-            z-index: 9999;
+            z-index: 99999;
         }
 
 
         .close-button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #03b8a6;
+            background-color: #115fa8;
             color: rgb(255, 255, 255);
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             z-index: 9999;
+        }
+
+
+
+
+        /*배경*/
+
+        #leftbeam01,
+        #rightbeam01 {
+            height: 100%;
+            left: 0%;
+            top: 0%;
+            position: absolute;
+            z-index: -9999;
+
+            mix-blend-mode: soft-light;
+            opacity: 1;
+            animation: blinkRain 1s infinite alternate;
+        }
+
+        @keyframes blinkRain {
+            0% {
+                opacity: 0;
+                /* 최소 불투명도 */
+            }
+
+            100% {
+                opacity: 0.7;
+                /* 최소 불투명도로 돌아옴 */
+            }
+        }
+
+
+
+
+
+        #alien01 {
+            width: 100%;
+            left: 0%;
+            top: 0%;
+            position: absolute;
+            z-index: -9998;
+
+        }
+
+        #earth01 {
+            width: 115%;
+            left: 0%;
+            top: 2%;
+            position: absolute;
+            z-index: -9998;
+        }
+
+
+        #woolsey01 {
+            width: 110%;
+            top: 4%;
+            left: 1%;
+            position: absolute;
+            z-index: -9998;
         }
     </style>
 </head>
@@ -187,8 +233,19 @@
 
 
 
+    <img id="alien01" src="alien01.png">
+    <img id="earth01" src="earth01.png">
+    <img id="leftbeam01" src="leftbeam01.png">
+    <img id="rightbeam01" src="rightbeam01.png">
+    <img id="woolsey01" src="woolsey01.png">
+
+
+
     <div id="win"></div>
     <div id="lose"></div>
+
+
+
 
 
     <div id="phone" class="mystuff" data-image="phone.png" data-start-left="60vw" data-start-top="60vh"
@@ -209,7 +266,7 @@
     <div id="target"></div>
 
 
-    <button id="move-popup-btn">이사 가볼까?</button>
+
 
 
 
@@ -250,7 +307,7 @@
 
 
         // 공이 착지할 최소 최대 거리
-        const MIN_TRAVEL = 200;
+        const MIN_TRAVEL = 400;
         const MAX_TRAVEL = 600;
 
 
