@@ -235,36 +235,62 @@
 
 
         #doodle1 {
-            height: 150vh;
+            height: 120%;
 
-            top: 0%;
-            right: 0%;
-
+            right: -10%;
             opacity: 1;
-
-
-            animation-delay: s;
+            position: absolute;
+            opacity: 0;
+            mix-blend-mode: color-burn;
+            z-index: -500;
+            animation: doodle1 2s infinite;
+            animation-delay: 8s;
             animation-fill-mode: forwards;
 
         }
 
-        #doodle2 {
-            height: 100vh;
-            top: 0%;
-            right: 20%;
-            position: absolute;
-            opacity: 1;
-            z-index: -500;
+        @keyframes doodle1 {
+            0% {
+                opacity: 0.4
+            }
 
-            animation-delay: s;
+            100% {
+                opacity: 0.8;
+
+            }
+        }
+
+        #doodle2 {
+            height: 100%;
+            bottom: 0%;
+            left: 0%;
+            position: absolute;
+            opacity: 0;
+
+
+            mix-blend-mode: hard-light;
+            z-index: -500;
+            animation: doodle2 2s infinite;
+            animation-delay: 8s;
             animation-fill-mode: forwards;
 
+        }
+
+        @keyframes doodle2 {
+            0% {
+                opacity: 0.4
+            }
+
+            100% {
+                opacity: 1;
+
+            }
         }
 
 
         #move-popup-btn {
             top: 75%;
-            left: 27%;
+            left: 23%;
             padding: 10px 20px;
             font-size: 18px;
             font-weight: bold;
@@ -332,7 +358,7 @@
 
         <button id="move-popup-btn">어떤 짐을 가져갈까?</button>
 
-
+        <audio id="typingSound" src="typing.mp3" preload="auto"></audio>
         <script>
 
         </script>
@@ -350,6 +376,38 @@
 
 
         const moveBtn = document.getElementById('move-popup-btn');
+
+
+
+
+
+        // 오디오 요소를 sound 대신 typingAudio 변수에 저장했습니다.
+        const typingAudio = document.getElementById('typingSound');
+
+        let hasInteracted = false; // 사용자의 첫 상호작용 여부를 추적
+
+        // ⭐️ 1. MP3 재생을 시작하는 함수 정의
+        function startTypingSound() {
+            // 오디오를 재생하고 Promise 오류(자동 재생 차단)를 처리합니다.
+            typingAudio.play().catch(error => {
+                console.warn("오디오 재생 실패 (브라우저 정책에 의해 차단됨):", error);
+            });
+        }
+
+
+        // ⭐️ 2. 첫 상호작용 핸들러 (타이머 시작)
+        function handleFirstInteraction() {
+            // 이미 상호작용이 처리되었으면 중단
+            if (hasInteracted) return;
+            hasInteracted = true;
+
+            // #line1의 animation-delay: 8s에 맞춰 8000ms 후에 사운드 재생 타이머 시작
+            setTimeout(startTypingSound, 8000);
+
+            // 타이머가 한 번만 시작되도록 이벤트 리스너를 제거합니다.
+            document.removeEventListener('click', handleFirstInteraction);
+            document.removeEventListener('touchstart', handleFirstInteraction);
+        }
 
         moveBtn.addEventListener('click', () => {
             window.location.href = "introduce2.html";

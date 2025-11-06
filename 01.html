@@ -36,7 +36,7 @@
             background-position: center;
             cursor: pointer;
 
-            /* 드래그 가능함을 표시 */
+
         }
 
 
@@ -55,8 +55,9 @@
             border-style: solid;
             border-width: 10px;
             border-radius: 10px;
-            border-color: #366dbb;
-
+            border-color: rgb(104, 112, 223);
+            position: relative;
+            left: 10%;
 
             z-index: 1000;
         }
@@ -122,6 +123,17 @@
 
 
 
+        #successful-stuff-images img {
+            width: 20%;
+            /* 이미지 너비 */
+            height: 20%;
+            object-fit: cover;
+
+
+
+
+        }
+
 
 
 
@@ -129,37 +141,48 @@
 
         /*설명창*/
         .explanation-content {
-            width: 30%;
+
             background-color: rgb(236, 247, 255);
+            position: absolute;
             padding: 10px;
-            left: 3%;
-            top: 0%;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 14%;
             border-radius: 8px;
             text-align: center;
             color: rgb(33, 12, 124);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             width: 300px;
-            opacity: 1;
+            opacity: 0.9;
+
 
             justify-content: center;
             align-items: center;
 
-            /* ⭐️ 다른 모든 요소보다 위에 오도록 높은 값 설정 */
+
             z-index: 99999;
         }
 
-
+        /*설명창닫기버튼*/
         .close-button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #115fa8;
+            background-color: rgb(33, 12, 124);
             color: rgb(255, 255, 255);
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             z-index: 9999;
+
         }
+
+
+
+
+
+
+
 
 
 
@@ -265,11 +288,6 @@
 
     <div id="target"></div>
 
-
-
-
-
-
     <div id="explanationModal" class="explanation-content">
         <h2>짐을 던져보자</h2>
         <p> 짐을 당겼다 날려 외계 행성으로 보내주세요</p>
@@ -297,10 +315,10 @@
 
         let isDragging = false;
         let startX, startY;
-
-
-
         let gamedone = false; // 게임 전체 종료
+
+
+        let sentStuffs = []; //보내기성공짐이름리스트
 
 
         const FORCE_MULTIPLIER = 14;
@@ -346,7 +364,6 @@
             const initialTop = stuff.getAttribute('data-start-top') || INITIAL_TOP;
 
             stuff.style.transition = 'none';
-            console.log('asdf');
             wincaption.style.display = 'none';
             losecaption.style.display = 'none';
             if (!isFinalFix) {
@@ -374,11 +391,17 @@
 
             if (isInsideTarget) {
                 // ⭐️ 성공 처리 로직
-                resetball(stuff, true, finalX, finalY); // 타겟 위치에 고정 console.log(wincaption);
+                resetball(stuff, true, finalX, finalY);
                 wincaption.textContent = `${stuff.id} 보내기 성공!`;
                 wincaption.style.display = 'block';
                 stuff.style.pointerEvents = 'none'; // 성공한 짐 비활성화
+
+                if (!sentStuffs.includes(stuff.id)) {
+                    sentStuffs.push(stuff.id); // ⭐️ 성공 리스트에 추가
+                }
+                checkGameEnd(); // 성공 후 바로 게임 종료 확인
                 return true;
+
             }
             else {
                 // 실패 처리 로직 (총 3회 제한)
@@ -390,18 +413,19 @@
                     losecaption.textContent = `${stuff.id} 보내기 실패! 다시 시도해보세요! ${currentAttempts} / 2회`;
                     losecaption.style.display = 'block';
 
-                    setTimeout(() => resetball(stuff, false), 1000); // 1초 후 초기 위치로 복귀
+                    setTimeout(() => {
+                        resetball(stuff, false);
+                        checkGameEnd(); // 재시도 후 게임 종료 확인
+                    }, 1000);
                 } else {
                     resetball(stuff, true, finalX, finalY);
                     losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
                     losecaption.style.display = 'block';
 
-                    // ⭐️ 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
+                    // 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
                     stuff.style.pointerEvents = 'none';
-
+                    checkGameEnd(); // 기회 소진 후 게임 종료 확인
                 }
-
-
                 return false;
             }
         }
@@ -468,8 +492,7 @@
             let movingX = 0;
             let movingY = 0;
             let finalX = stuffToThrow.offsetLeft + stuffToThrow.offsetWidth / 2;
-            let finalY = stuffToThrow.offsetTop + stuffToThrow.offsetHeight / 2;
-
+            let finalY = stuffToThrow.offsetTop + movingY + (stuffToThrow.offsetHeight / 2);
 
             // 당긴 힘이 0이 아닐 때만 적용
             if (originalMagnitude > 0) {
@@ -510,12 +533,72 @@
         }
 
 
-        // 어떤 짐 성공/실패했는지 알려주고 이사 시작
-        const moveBtn = document.getElementById('move-popup-btn');
+        // #### 기회 소진 후 성공 짐 리스트 출력//
+        function showFinalResults() {
+            wincaption.style.display = 'block';
+            losecaption.style.display = 'none';
 
-        moveBtn.addEventListener('click', () => {
-            window.location.href = "02.html";
-        })
+            localStorage.setItem('SuccessfulStuffs', JSON.stringify(sentStuffs));
+
+            let imagesHtml = '';
+            if (sentStuffs.length > 0) {
+                // sentStuffs 배열의 각 짐 ID에 해당하는 이미지 경로를 찾아서 img 태그 생성
+                imagesHtml = sentStuffs.map(stuffId => {
+                    const stuffElement = document.getElementById(stuffId);
+                    if (stuffElement) {
+                        // data-image 속성에서 이미지 경로를 가져옵니다.
+                        const imagePath = stuffElement.getAttribute('data-image');
+                        return `<img src="${imagePath}" alt="${stuffId}" title="${stuffId}">`;
+                    }
+                    return ''; // 요소를 찾지 못하면 빈 문자열 반환
+                }).join(''); // 모든 img 태그들을 하나의 문자열로 합침
+
+                imagesHtml = `<div id="successful-stuff-images">${imagesHtml}</div>`;
+            } else {
+                imagesHtml = '<p>아쉽지만 보낸 짐이 없습니다.</p>';
+            }
+
+            // 결과 팝업(#win)에 HTML 내용을 삽입합니다.
+            wincaption.innerHTML = `
+                <h2>짐을 다 보냈어요!</h2>
+                <p>울지 행성에 도착한 짐:</p>
+                ${imagesHtml} 
+                <a href="02.html"
+                   style="
+                       display: inline-block;
+                       padding: 10px 20px;
+                       font-size: 18px;
+                       font-weight: bold;
+                       cursor: pointer;
+                       background-color:  rgb(33, 12, 124);
+                       color: white;
+                       border: none;
+                       border-radius: 5px;
+                       margin-top: 15px;
+                       text-decoration: none;
+                       font-family: 'Gugi', sans-serif;
+                   "
+                >이제 떠나자</a>
+            `;
+        }
+
+
+
+
+        function checkGameEnd() {
+
+            const allAttemptsDone = Array.from(mystuffs).every(stuff => {
+                const attempts = parseInt(stuff.getAttribute('data-attempts'));
+
+
+                return attempts >= 3 || stuff.style.pointerEvents === 'none';
+            });
+
+            if (allAttemptsDone && !gamedone) {
+                gamedone = true;
+                showFinalResults();
+            }
+        }
     </script>
 </body>
 

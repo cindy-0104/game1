@@ -3,41 +3,61 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새 보금자리</title>
-
+    <title>새로운 행성으로 이사</title>
     <style>
         body {
-            background-image: url('papiers-peints-alien-planet-3d-rendu-illustration-d-39-ordinateur.jpg.jpg');
-            background-size: 700px;
-            color:
-                rgb(255, 255, 255);
-            background-repeat: no-repeat;
-            position: absolute;
+            font-family: sans-serif;
+            text-align: center;
         }
 
-        #tv {
-            font-size: 70px;
-            margin-top: 200px;
-            margin-left: 200px;
-            color: black;
-
+        .successful-stuff-item img {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
         }
     </style>
 </head>
 
 <body>
 
-    <h> 새로운 보금자리야! </h>
+    <h1>새로운 행성에 도착한 짐들</h1>
+    <div id="stuff-list-display">
+    </div>
 
-
-
-    <div id="tv">...</div>
     <script>
-        e.preventDefault();
-        phone.style.transition = 'none';
-        { passive: false };
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. localStorage에서 저장된 JSON 문자열을 가져옵니다.
+            const savedStuffsJSON = localStorage.getItem('SuccessfulStuffs');
+            const displayDiv = document.getElementById('stuff-list-display');
 
+            if (savedStuffsJSON) {
+                // 2. JSON 문자열을 JavaScript 배열로 변환합니다.
+                const successfulStuffs = JSON.parse(savedStuffsJSON);
+
+                if (successfulStuffs.length > 0) {
+                    let htmlContent = '';
+
+                    // 3. 각 짐 ID를 이미지로 변환하여 HTML 문자열을 만듭니다.
+                    successfulStuffs.forEach(stuffId => {
+                        // 1페이지에서 사용했던 이미지 파일 경로 규칙을 그대로 사용합니다.
+                        const imagePath = `${stuffId}.png`;
+
+                        htmlContent += `
+                            <div class="successful-stuff-item">
+                                <img src="${imagePath}" alt="${stuffId}" title="${stuffId}">
+                            </div>
+                        `;
+                    });
+
+                    displayDiv.innerHTML = htmlContent;
+
+                } else {
+                    displayDiv.innerHTML = '<p>가져온 짐이 없습니다.</p>';
+                }
+            } else {
+                displayDiv.innerHTML = '<p>게임 데이터를 찾을 수 없습니다.</p>';
+            }
+        });
     </script>
 </body>
 
