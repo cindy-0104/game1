@@ -59,7 +59,7 @@
         }
 
 
-        /* --- 1. fall: 낙하 및 최종 위치, 이미지 변경 (2초) --- */
+
         @keyframes fall {
             0% {
                 transform: translateY(-100vh) rotate(0deg);
@@ -268,7 +268,7 @@
             }
         };
 
-        // 초기 안내창 닫기
+
         function closeinstruction() {
             const instruction = document.getElementById('instructionModal');
             instruction.style.display = 'none';
@@ -288,7 +288,7 @@
         let totalStuffs = 0;
 
 
-        // 모든 짐 확인 여부 검사 및 '다음' 버튼 활성화
+        // 모든 짐 확인 여부 검사, '다음' 버튼 활성화
         function checkAllStuffChecked() {
             if (totalStuffs === 0) return;
 
@@ -300,20 +300,19 @@
         }
 
 
-        // 팝업을 열고 정보 채우는 함수
         function openExplanation(name, description, stuffId) {
             modalTitle.textContent = name;
             modalDescription.textContent = description;
 
-            // 바뀐 이미지(stuffId + '03.png')를 모달에 삽입하는 로직
+
             const changedImagePath = `${stuffId}03.png`;
 
-            // 이미지 요소 생성 및 설정
+
             const imgElement = document.createElement('img');
             imgElement.src = changedImagePath;
             imgElement.alt = name;
 
-            // ❗️ 이미지 크기 조정 (50px -> 100px)
+
             imgElement.style.maxWidth = '200px';
             imgElement.style.height = 'auto';
             imgElement.style.marginBottom = '10px';
@@ -329,7 +328,7 @@
             stuffChecked[stuffId] = true;
         }
 
-        // 팝업을 닫는 함수
+
         function closeExplanation() {
             wrapper.style.display = 'none';
             checkAllStuffChecked();
@@ -337,7 +336,7 @@
         window.closeExplanation = closeExplanation;
 
 
-        // 이전 페이지에서 데이터 불러와 짐 요소 동적 생성
+        // 이전 페이지에서 데이터 불러오기
         document.addEventListener('DOMContentLoaded', function () {
             const savedStuffsJSON = localStorage.getItem('SuccessfulStuffs');
 
@@ -349,37 +348,37 @@
                     successfulStuffs.forEach(stuffId => {
                         const data = allStuffData[stuffId];
                         if (data) {
-                            // 1. 짐 요소(div) 생성
+
                             const stuffElement = document.createElement('div');
                             stuffElement.className = 'successful-stuff-item';
                             stuffElement.id = stuffId;
 
-                            // CSS 변수를 사용하여 이미지 경로를 애니메이션에 동적으로 전달
+
                             stuffElement.style.setProperty('--original-image', `url('${stuffId}.png')`);
                             stuffElement.style.setProperty('--changed-image', `url('${stuffId}03.png')`);
 
-                            // 2. 스타일 및 데이터 적용 (위치)
+
                             stuffElement.style.left = data.left;
                             stuffElement.style.top = data.top;
 
-                            // 3. 클릭 이벤트 리스너 추가
+
                             stuffElement.addEventListener('click', () => {
                                 openExplanation(data.name, data.description, stuffId);
                             });
 
-                            // 4. 컨테이너에 추가
+
                             stuffContainer.appendChild(stuffElement);
 
-                            // 5. 확인 상태 초기화
+
                             stuffChecked[stuffId] = false;
                         }
                     });
                 } else {
-                    // 짐이 없을 경우 메시지 표시
+
                     stuffContainer.innerHTML = '<div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); text-align: center;"><p>휑~,,, 빈털터리로 이사를 오게 되었어요. </p><p>괜찮아요, 이제부터 새로운 것들로 채워가면 되니까요!</p></div>';
                 }
             } else {
-                // 로컬 스토리지에 데이터가 없을 경우 메시지 표시
+
                 stuffContainer.innerHTML = '<div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); text-align: center;"><p>휑~,,, 빈털터리로 이사를 오게 되었어요. </p><p>괜찮아요, 이제부터 새로운 것들로 채워가면 되니까요!</p></div>';
             }
         });

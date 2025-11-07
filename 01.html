@@ -205,12 +205,12 @@
         @keyframes blinkRain {
             0% {
                 opacity: 0;
-                /* 최소 불투명도 */
+
             }
 
             100% {
                 opacity: 0.7;
-                /* 최소 불투명도로 돌아옴 */
+
             }
         }
 
@@ -422,16 +422,16 @@
                     losecaption.textContent = `${stuff.id} 보내기 실패! 이 짐은 행성에 가져갈 수 없어요`;
                     losecaption.style.display = 'block';
 
-                    // 해당 짐만 영구적으로 비활성화하고 떨어진 자리에 고정
+
                     stuff.style.pointerEvents = 'none';
-                    checkGameEnd(); // 기회 소진 후 게임 종료 확인
+                    checkGameEnd();
                 }
                 return false;
             }
         }
 
 
-        // touchstart 이벤트 등록
+
         mystuffs.forEach(stuff => {
             stuff.addEventListener('touchstart', (e) => {
                 // 실패 횟수 초과 시나, 이미 보낸 짐은 드래그 불가
@@ -448,13 +448,13 @@
         });
 
 
-        // touchmove 이벤트 처리
+
         document.addEventListener('touchmove', (e) => {
             if (!isDragging || gamedone || !currentStuff) return;
             const touch = e.touches[0];
             currentStuff.style.left = (touch.clientX - currentStuff.offsetWidth / 2) + 'px';
             currentStuff.style.top = (touch.clientY - currentStuff.offsetHeight / 2) + 'px';
-            e.preventDefault(); // 스크롤 방지
+            e.preventDefault();
         }, { passive: false });
 
 
@@ -463,9 +463,9 @@
             if (!isDragging || gamedone || !currentStuff) return;
             isDragging = false; //드래그끝
 
-            // currentStuff에서 stuffToThrow로 변수이름 바꾸는 부분
-            const stuffToThrow = currentStuff; // 던질 짐을 새 변수에 저장해서 역할 구분
-            currentStuff = null; // 현재 짐 currentStuff은 초기화
+
+            const stuffToThrow = currentStuff;
+            currentStuff = null;
 
             const touch = e.changedTouches[0];
             let endX = touch.clientX;
@@ -483,7 +483,7 @@
             );
 
 
-            //총 날아갈 거리 랜덤
+
             const randomTravelRange = MAX_TRAVEL - MIN_TRAVEL;
             const randomMagnitude = Math.random() * randomTravelRange + MIN_TRAVEL;
 
@@ -498,7 +498,7 @@
             if (originalMagnitude > 0) {
 
 
-                // (랜덤 크기 / 원래 크기) 비율을 각 방향 벡터에 곱해 크기를 조정합니다.
+
                 const scaleFactor = randomMagnitude / originalMagnitude;
                 movingX = directionX * scaleFactor;
                 movingY = directionY * scaleFactor;
@@ -525,10 +525,9 @@
         //설명창
 
         function closeExplanation() {
-            // 설명창 요소를 가져옵니다.
+
             const explanation = document.getElementById('explanationModal');
 
-            // 설명창을 숨깁니다.
             explanation.style.display = 'none';
         }
 
@@ -546,11 +545,11 @@
                 imagesHtml = sentStuffs.map(stuffId => {
                     const stuffElement = document.getElementById(stuffId);
                     if (stuffElement) {
-                        // data-image 속성에서 이미지 경로를 가져옵니다.
+
                         const imagePath = stuffElement.getAttribute('data-image');
                         return `<img src="${imagePath}" alt="${stuffId}" title="${stuffId}">`;
                     }
-                    return ''; // 요소를 찾지 못하면 빈 문자열 반환
+                    return '';
                 }).join(''); // 모든 img 태그들을 하나의 문자열로 합침
 
                 imagesHtml = `<div id="successful-stuff-images">${imagesHtml}</div>`;
@@ -558,7 +557,7 @@
                 imagesHtml = '<p>아쉽지만 보낸 짐이 없습니다.</p>';
             }
 
-            // 결과 팝업(#win)에 HTML 내용을 삽입합니다.
+            // 결과 팝업(#win)에 HTML 내용을 삽입
             wincaption.innerHTML = `
                 <h2>짐을 다 보냈어요!</h2>
                 <p>울지 행성에 도착한 짐:</p>

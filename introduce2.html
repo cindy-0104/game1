@@ -75,7 +75,7 @@
         .mystuff {
             width: 35%;
             height: 35%;
-            /* 클릭하기 쉽도록 크기 조정 */
+
 
             position: absolute;
             background-size: cover;
@@ -152,12 +152,12 @@
         @keyframes blinkRain {
             0% {
                 opacity: 0;
-                /* 최소 불투명도 */
+
             }
 
             100% {
                 opacity: 0.7;
-                /* 최소 불투명도로 돌아옴 */
+
             }
         }
 
@@ -179,7 +179,7 @@
             font-family: "Gugi", sans-serif;
         }
 
-        /* 닫기 버튼 */
+
         .close-button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -244,56 +244,54 @@
         });
 
 
-        // ... (생략) ...
 
-        // 짐 초기화 및 스타일 설정 함수
         function initializeStuff(stuff) {
-            // ⭐️ 초기 위치 값을 데이터 속성에서 가져옵니다.
+
             const initialLeft = stuff.getAttribute('data-start-left');
             const initialTop = stuff.getAttribute('data-start-top');
             const imagePath = stuff.getAttribute('data-image');
 
-            // ⭐️ 스타일 적용
+
             stuff.style.left = initialLeft;
             stuff.style.top = initialTop;
             stuff.style.backgroundImage = `url('${imagePath}')`;
         }
 
-        // ⭐️ 모든 짐 초기화 (코드 추가)
+
         mystuffs.forEach(initializeStuff);
 
 
 
-        // 짐 초기화 및 스타일 설정 함수
+
         function checkAllStuffChecked() {
-            // stuffChecked 객체의 모든 값이 true인지 확인합니다.
+
             const allChecked = Object.values(stuffChecked).every(isChecked => isChecked === true);
 
             if (allChecked) {
-                // ⭐️ 모두 확인되었으면 버튼을 보이게 합니다.
+
                 nextButton.style.display = 'block';
             }
         }
 
 
-        // ⭐️ 팝업을 열고 정보 채우는 함수
-        function openExplanation(name, description, stuffId) { // 짐의 ID를 인수로 받습니다.
+
+        function openExplanation(name, description, stuffId) {
             modalTitle.textContent = name;
             modalDescription.textContent = description;
             wrapper.style.display = 'flex';
 
-            // ⭐️ 짐의 상태를 '확인됨'으로 설정합니다.
+
             stuffChecked[stuffId] = true;
         }
 
-        // 팝업을 닫는 함수
+
         function closeExplanation() {
             wrapper.style.display = 'none';
-            // ⭐️ 팝업을 닫을 때마다 모든 짐이 확인되었는지 검사합니다.
+
             checkAllStuffChecked();
         }
 
-        // 모든 짐에 클릭 이벤트 리스너 추가
+
         mystuffs.forEach(stuff => {
             stuff.addEventListener('click', () => {
                 const name = stuff.getAttribute('data-name');
@@ -303,7 +301,7 @@
             });
         });
 
-        // 전역 스코프에 closeExplanation 함수를 노출 (HTML onclick 사용을 위함)
+
         window.closeExplanation = closeExplanation; 
     </script>
 
