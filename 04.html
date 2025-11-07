@@ -11,23 +11,72 @@
     @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
 
 
-    body {}
+    body {
+        overflow: hidden;
+        background-image: url('back03.png');
+        overflow: hidden;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        background-position: center;
+        font-family: "Gugi", sans-serif;
+        font-style: normal;
+
+        height: 95vh;
+
+        width: 100vw;
+    }
 
 
     #woolsey01 {
-        width: 100%
+        position: absolute;
+        width: 100%;
+        top: 30%;
+        left: 10%;
+
+
+        cursor: pointer;
+        z-index: 1000;
+
+
+        animation:
+            spin 10s infinite;
+
     }
 
 
 
-    .next {
+    @keyframes spin {
+        0% {
+            /* 시작: 원래 너비(예시로 100% 사용) 및 왼쪽 회전 */
+            transform: rotate(-20deg);
+            width: 100%;
+        }
+
+        30% {
+            /* 중간: 가장 좁아지고 오른쪽 회전 */
+            transform: rotate(20deg);
+
+            /* 너비를 60%로 줄임 */
+        }
+
+        100% {
+            /* 끝: 원래 너비로 돌아가고 왼쪽 회전 */
+            transform: rotate(-40deg);
+            width: 10%;
+        }
+    }
+
+    #next {
         margin-top: 20px;
         padding: 10px 20px;
-        background-color: #343585;
+
         color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+        opacity: 0.8;
+        position: absolute;
+        top: 75%;
+        left: 30%;
+        font-size: 16px;
         font-weight: bold;
         font-family: "Gugi", sans-serif;
         z-index: 9999;
@@ -36,13 +85,9 @@
     }
 </style>
 
-<button class="close-button" onclick="closeExplanation()">닫기</button>
+
 <a id="next" href="05.html">새 행성에서 행복할 수 있을까?</a>
 
-<img id="alien01" src="alien01.png">
-<img id="earth01" src="earth01.png">
-<img id="leftbeam01" src="leftbeam01.png">
-<img id="rightbeam01" src="rightbeam01.png">
 <img id="woolsey01" src="woolsey01.png">
 
 

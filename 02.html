@@ -17,7 +17,7 @@
             user-select: none;
             width: 100%;
             height: 100vh;
-            color: white;
+
 
 
             background-image: url('spacepathback.png');
@@ -40,6 +40,51 @@
             z-index: 5;
             position: absolute;
         }
+
+
+
+
+
+
+
+
+        .instruction-content {
+            background-color: rgb(236, 247, 255);
+            position: fixed;
+            padding: 20px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            top: 45%;
+            border-radius: 8px;
+            text-align: center;
+            color: rgb(33, 12, 124);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            width: 60vw;
+            font-size: 9px;
+
+            opacity: 0.95;
+            z-index: 100000;
+        }
+
+        .inst-close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: rgb(33, 12, 124);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 9999;
+        }
+
+
+
+
+
+
+
+
 
 
         #moving-path-container {
@@ -86,6 +131,7 @@
             }
         }
 
+
         #moving-path-container img {
             max-width: 80vw;
             max-height: 50vh;
@@ -98,7 +144,7 @@
 
         #popup-message {
             color: white;
-            font-size: 24px;
+            font-size: 17px;
             font-weight: bold;
             margin-bottom: 15px;
             text-align: center;
@@ -134,10 +180,24 @@
         <img id="moving-path" src="" alt="이동 경로 이미지">
         <button id="close-popup-btn">계속 이동하기</button>
         <a href="03.html"></a>
-        <img id="fog" src="fog.png" alt="fog">
+
     </div>
 
-    <h>울지 행성으로 이동중... </h>
+
+
+
+    <div id="instructionModal" class="instruction-content">
+        <h1>울지 행성으로 이동중...
+            <p>위부터 초록 길을 따라</p>
+            손가락으로 선을 그려
+            <p>울지 행성으로 떠나요!</p>
+            <p>여정에 무엇을 마주칠까요?</p>
+        </h1>
+        <button class="inst-close" onclick="closeinstruction()">닫기</button>
+    </div>
+
+
+
     <script>
         let isDrawing = false;
         let isPathShown = false;
@@ -145,7 +205,7 @@
 
         const TARGET_AREAS = [
             {
-                name: "첫 번째 행성: Planet A",
+                name: "미지의 플래닛 2arth - 지구와 닮았지만 다른 이 행성은 뭐지...? 초록색으로 덮인 저건.. 숲이 아니라 곰팡이,,?",
                 xMin: window.innerWidth * 0.2, xMax: window.innerWidth * 0.4,
                 yMin: window.innerHeight * 0.2, yMax: window.innerHeight * 0.4,
                 image: "planet1.png",
@@ -153,14 +213,14 @@
             },
 
             {
-                name: "미지의 존재: Eating Alien",
+                name: "대왕 외계인 - 으악!! 또 나타났잖아 도망가자!",
                 xMin: window.innerWidth * 0.2, xMax: window.innerWidth * 0.4,
                 yMin: window.innerHeight * 0.6, yMax: window.innerHeight * 0.8,
                 image: "eatingalien.png",
                 reached: false
             },
             {
-                name: "버섯 행성: Mushroom Planet",
+                name: "지구에서 날아와 우주를 부유하던 버섯들이 모이고, 우주 쓰레기를 먹이 삼아 비 정상적으로 커지더니, 버섯 행성을 이뤘어",
                 xMin: window.innerWidth * 0.7, xMax: window.innerWidth * 0.9,
                 yMin: window.innerHeight * 0.1, yMax: window.innerHeight * 0.3,
                 image: "mushroom.png",
@@ -170,7 +230,7 @@
 
 
             {
-                name: "울지 행성 도착",
+                name: "저기 빛이 보여! 울지 행성에 도착했나봐",
 
                 xMin: window.innerWidth * 0.4, xMax: window.innerWidth * 0.6,
                 yMin: window.innerHeight * 0.7, yMax: window.innerHeight * 1,
@@ -212,6 +272,12 @@
 
 
 
+        function closeinstruction() {
+            const instruction = document.getElementById('instructionModal');
+            instruction.style.display = 'none';
+        }
+        window.closeinstruction = closeinstruction;
+
 
 
 
@@ -244,8 +310,8 @@
 
                     showMovingPathImage(area.image, area.name);
 
-                    if (area.name === "울지 행성 도착") {
-                        closeBtn.textContent = "다음 화면으로 이동";
+                    if (area.name === "저기 빛이 보여! 울지 행성에 도착했나봐") {
+                        closeBtn.textContent = "행성에 도착!";
 
 
                         closeBtn.removeEventListener('click', closePopup);
