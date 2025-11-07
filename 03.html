@@ -5,60 +5,378 @@
     <meta charset="UTF-8">
     <title>새로운 행성으로 이사</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
+
+
         body {
-            font-family: sans-serif;
-            text-align: center;
+            /* 배경 이미지 (예시: 'planet.png'로 변경 권장) */
+            background-image: url('png');
+            overflow: hidden;
+            background-repeat: no-repeat;
+            background-size: 55vh;
+            font-family: "Gugi", sans-serif;
+            font-style: normal;
+            font-size: 15px;
         }
 
-        .successful-stuff-item img {
-            width: 50px;
-            height: 50px;
-            margin: 5px;
+        /* 짐 배치할 자리 */
+        #SuccessfulStuffs {
+            position: absolute;
+            top: -10%;
+            left: -8%;
+            width: 80%;
+            height: 80%;
+        }
+
+        /* 개별 짐 요소의 스타일 */
+        .successful-stuff-item {
+            position: absolute;
+            width: 70%;
+            /* 개별 짐 이미지의 크기를 명확히 지정 */
+            height: 70%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 1000;
+
+            /* 애니메이션 시간과 순서 재조정 */
+            animation:
+                /* fall 2초 실행, 마지막 상태 유지 */
+                fall 2s ease-out forwards,
+                /* spin 4초 동안 무한 반복 */
+                spin 4s linear infinite;
+
+            /* fall은 즉시 시작(0s), spin은 fall이 끝난 시점(2s)에 시작 */
+            animation-delay: 0s, 2s;
+        }
+
+
+        /* --- 1. fall: 낙하 및 최종 위치, 이미지 변경 (2초) --- */
+        @keyframes fall {
+            0% {
+                /* 초기 이미지와 위치 (화면 위) */
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+                background-image: var(--original-image);
+            }
+
+            50% {
+                /* 중간 상태 (이미지 변경) */
+                transform: translateY(-30vh) rotate(-20deg);
+                opacity: 1;
+                background-image: var(--changed-image);
+            }
+
+            100% {
+                /* 최종 위치 (제자리) */
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                background-image: var(--changed-image);
+            }
+        }
+
+
+        /* --- 2. spin: 고정된 상태에서 무한 회전 (4초) --- */
+        @keyframes spin {
+            0% {
+                transform: translateY(0) rotate(-10deg);
+            }
+
+            50% {
+                transform: translateY(0) rotate(10deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(-10deg);
+            }
+        }
+
+
+        /*처음 뜨는 화면창*/
+        .instruction-content {
+            background-color: rgb(236, 247, 255);
+            position: fixed;
+            padding: 20px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            border-radius: 8px;
+            text-align: center;
+            color: rgb(33, 12, 124);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            opacity: 0.95;
+            z-index: 100000;
+        }
+
+        .inst-close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: rgb(33, 12, 124);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 9999;
+        }
+
+
+
+        /*짐 설명 창*/
+
+        #explanationWrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+
+        .explanation-content {
+            background-color: rgb(114, 134, 214);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 500px;
+            color: white;
+            font-family: "Gugi", sans-serif;
+        }
+
+
+        .exp-close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #343585;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Gugi", sans-serif;
+            text-decoration: none;
+        }
+
+
+        #next {
+            font-size: 30px;
+            top: 5vh;
+            right: 5vw;
+            padding: 15px 20px;
+            font-weight: bold;
+            background-color: #8b82eb;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: "Gugi", sans-serif;
+            position: absolute;
+            display: none;
+            z-index: 9999;
+            text-decoration: none;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>새로운 행성에 도착한 짐들</h1>
-    <div id="stuff-list-display">
+
+    <div id="instructionModal" class="instruction-content">
+        <h1>울지 행성으로의 이사를 성공적으로 완료했어요!
+            <p>당신의 짐이 만든 새로운 보금자리를 **클릭하여** 확인해보세요</p>
+        </h1>
+        <button class="inst-close" onclick="closeinstruction()">닫기</button>
     </div>
 
+    <div id="SuccessfulStuffs"></div>
+
+    <a id="next" href="04.html">다음 페이지로 이동 ></a>
+
+
+    <div id="explanationWrapper" style="display: none;">
+        <div id="modalContent" class="explanation-content">
+            <h2 id="modalTitle"></h2>
+            <p id="modalImageContainer"></p>
+            <p id="modalDescription"></p>
+            <button class="exp-close" onclick="closeExplanation()">닫기</button>
+        </div>
+    </div>
+
+
     <script>
+        // 모든 짐의 정보 (위치와 설명 데이터)
+        const allStuffData = {
+            "phone": {
+                name: "휴대폰",
+                description: "누구에게든 연락할 수 있어 안정감을 줬는데,,,",
+                left: "10%",
+                top: "40%"
+
+            },
+            "seed": {
+                name: "생명의 씨앗",
+                description: "함께 숨쉬고 있는 생명이 필요해",
+                left: "70%",
+                top: "35%"
+
+            },
+            "rainbow": {
+                name: "무지개 빛",
+                description: "물을 뿌리면 무지개가 보일지도 몰라 하루종일 무지개 끝을 쫓으면 살아 남을 수 있을 것 같아",
+                left: "10%",
+                top: "85%"
+            },
+            "mirror": {
+                name: "거울",
+                description: "내 눈을 다시 볼 수 없을지도 몰라",
+                left: "40%",
+                top: "0%"
+            },
+            "door": {
+                name: "미래의 문",
+                description: "언젠가는 내 사람들에게 돌아갈 문을 열 수 있을지 몰라",
+                left: "80%",
+                top: "0%"
+            },
+            "matcha": {
+                name: "말차 라떼",
+                description: "특별한 한 잔이 필요할 것 같아",
+                left: "60%",
+                top: "70%"
+            }
+        };
+
+        // 초기 안내창 닫기
+        function closeinstruction() {
+            const instruction = document.getElementById('instructionModal');
+            instruction.style.display = 'none';
+        }
+        window.closeinstruction = closeinstruction;
+
+
+        const wrapper = document.getElementById('explanationWrapper');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const nextButton = document.getElementById('next');
+        const stuffContainer = document.getElementById('SuccessfulStuffs');
+        const modalImageContainer = document.getElementById('modalImageContainer');
+
+
+        const stuffChecked = {}; // 이 객체에 동적으로 생성된 짐의 상태만 저장됩니다.
+        let totalStuffs = 0; // 가져온 짐의 총 개수
+
+
+        // 모든 짐 확인 여부 검사 및 '다음' 버튼 활성화
+        function checkAllStuffChecked() {
+            if (totalStuffs === 0) return; // 가져온 짐이 없으면 확인 안 함
+
+            // stuffChecked 객체의 모든 값이 true인지 확인
+            const allChecked = Object.values(stuffChecked).every(isChecked => isChecked === true);
+
+            if (allChecked) {
+                // 모두 확인되었으면 버튼을 보이게 함
+                nextButton.style.display = 'block';
+            }
+        }
+
+
+        // 팝업을 열고 정보 채우는 함수
+        function openExplanation(name, description, stuffId) {
+            modalTitle.textContent = name;
+            modalDescription.textContent = description;
+
+            // ----------------------------------------------------
+            // ✨ 바뀐 이미지(stuffId + '03.png')를 모달에 삽입하는 로직
+            // ----------------------------------------------------
+            const changedImagePath = `${stuffId}03.png`;
+
+            // 이미지 요소 생성 및 설정
+            const imgElement = document.createElement('img');
+            imgElement.src = changedImagePath;
+            imgElement.alt = name;
+            imgElement.style.maxWidth = '150px';
+            imgElement.style.height = 'auto';
+            imgElement.style.marginBottom = '15px';
+            imgElement.style.borderRadius = '8px';
+            imgElement.style.border = '3px solid white';
+
+            // 기존 내용을 지우고 새로운 이미지 삽입
+            modalImageContainer.innerHTML = '';
+            modalImageContainer.appendChild(imgElement);
+            // ----------------------------------------------------
+
+            wrapper.style.display = 'flex'; // wrapper를 flex로 보여주어 중앙 정렬
+
+            // 짐의 상태를 '확인됨'으로 설정
+            stuffChecked[stuffId] = true;
+        }
+
+        // 팝업을 닫는 함수
+        function closeExplanation() {
+            wrapper.style.display = 'none';
+            // 팝업을 닫을 때마다 모든 짐이 확인되었는지 검사
+            checkAllStuffChecked();
+        }
+        window.closeExplanation = closeExplanation;
+
+
+        // 이전 페이지에서 데이터 불러와 짐 요소 동적 생성
         document.addEventListener('DOMContentLoaded', function () {
-            // 1. localStorage에서 저장된 JSON 문자열을 가져옵니다.
             const savedStuffsJSON = localStorage.getItem('SuccessfulStuffs');
-            const displayDiv = document.getElementById('stuff-list-display');
 
             if (savedStuffsJSON) {
-                // 2. JSON 문자열을 JavaScript 배열로 변환합니다.
                 const successfulStuffs = JSON.parse(savedStuffsJSON);
+                totalStuffs = successfulStuffs.length;
 
-                if (successfulStuffs.length > 0) {
-                    let htmlContent = '';
-
-                    // 3. 각 짐 ID를 이미지로 변환하여 HTML 문자열을 만듭니다.
+                if (totalStuffs > 0) {
                     successfulStuffs.forEach(stuffId => {
-                        // 1페이지에서 사용했던 이미지 파일 경로 규칙을 그대로 사용합니다.
-                        const imagePath = `${stuffId}.png`;
+                        const data = allStuffData[stuffId];
+                        if (data) {
+                            // 1. 짐 요소(div) 생성
+                            const stuffElement = document.createElement('div');
+                            stuffElement.className = 'successful-stuff-item';
+                            stuffElement.id = stuffId;
 
-                        htmlContent += `
-                            <div class="successful-stuff-item">
-                                <img src="${imagePath}" alt="${stuffId}" title="${stuffId}">
-                            </div>
-                        `;
+                            // CSS 변수를 사용하여 이미지 경로를 애니메이션에 동적으로 전달
+                            stuffElement.style.setProperty('--original-image', `url('${stuffId}.png')`);
+                            stuffElement.style.setProperty('--changed-image', `url('${stuffId}03.png')`);
+
+                            // 2. 스타일 및 데이터 적용 (위치)
+                            stuffElement.style.left = data.left;
+                            stuffElement.style.top = data.top;
+
+                            // 3. 클릭 이벤트 리스너 추가
+                            stuffElement.addEventListener('click', () => {
+                                openExplanation(data.name, data.description, stuffId);
+                            });
+
+                            // 4. 컨테이너에 추가
+                            stuffContainer.appendChild(stuffElement);
+
+                            // 5. 확인 상태 초기화
+                            stuffChecked[stuffId] = false;
+                        }
                     });
-
-                    displayDiv.innerHTML = htmlContent;
-
                 } else {
-                    displayDiv.innerHTML = '<p>가져온 짐이 없습니다.</p>';
+                    // 짐이 없을 경우 메시지 표시
+                    stuffContainer.innerHTML = '<div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); text-align: center;"><p>휑~,,, 빈털터리로 이사를 오게 되었어요. </p><p>괜찮아요, 이제부터 새로운 것들로 채워가면 되니까요!</p></div>';
                 }
             } else {
-                displayDiv.innerHTML = '<p>게임 데이터를 찾을 수 없습니다.</p>';
+                // 로컬 스토리지에 데이터가 없을 경우 메시지 표시
+                stuffContainer.innerHTML = '<div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); text-align: center;"><p>휑~,,, 빈털터리로 이사를 오게 되었어요. </p><p>괜찮아요, 이제부터 새로운 것들로 채워가면 되니까요!</p></div>';
             }
         });
+
     </script>
+
 </body>
 
 </html>
